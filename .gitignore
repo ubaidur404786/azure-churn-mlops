@@ -1,0 +1,19 @@
+# Secrets and local settings
+.env
+
+# Trained model files (downloaded from the Azure ML registry instead)
+model/
+
+# Python cache and virtual environment
+__pycache__/
+.venv/
+.pytest_cache/
+
+# Local MLflow runs
+mlruns/
+mlartifacts/
+
+# Private planning and assistant files (not part of the public project)
+PLAN.md
+CLAUDE.md
+.claude/

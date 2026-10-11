@@ -1,0 +1,16 @@
+# Data and model
+pandas
+scikit-learn
+joblib
+
+# Experiment tracking (local and Azure ML)
+mlflow
+azureml-mlflow
+
+# Web API
+fastapi
+uvicorn
+
+# Tests
+pytest
+httpx
