@@ -41,7 +41,7 @@ jobs:
         run: echo "TAG=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
       # Log in to Azure with OIDC (no password stored in GitHub)
-      - uses: azure/login@v2
+      - uses: azure/login@v3
         with:
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           tenant-id: ${{ vars.AZURE_TENANT_ID }}

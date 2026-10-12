@@ -289,3 +289,91 @@ pytest --collect-only -q
 ```
 
 Also changed: the speed script now **adds one row** per run to [docs/results/api_speed.md](../results/api_speed.md) instead of rewriting the file, so no result is lost again.
+
+---
+
+## 5.5 (part 3) First deploy run
+
+After the fix, CI #3 was green (1 min 8 s) and started Deploy #2. Deploy failed at the login step:
+
+```
+Run azure/login@v2
+##[error]AADSTS700213: No matching federated identity record found for presented assertion subject
+'repo:ubaidur404786@78012349/azure-churn-mlops@1414838910:ref:refs/heads/main'.
+Check your federated identity credential Subject, Audience and Issuer against the presented assertion.
+```
+
+Cause: GitHub now writes the **owner id and repo id** inside the token's subject (`owner@ownerId/repo@repoId`). This makes the trust rule safer: if the repo were deleted and someone created a new repo with the same name, its id would be different and the login would be refused. Our federated credential still had the old short form `repo:ubaidur404786/azure-churn-mlops:...`, so the subjects did not match.
+
+How to read this error: Entra ID prints the **exact subject GitHub sent**. The fix is always to copy that string into the federated credential.
+
+Fix: the subject in [infra/github-federated-credential.json](../../infra/github-federated-credential.json) is now `repo:ubaidur404786@78012349/azure-churn-mlops@1414838910:ref:refs/heads/main`. The ids are public numbers, not secrets.
+
+Update the trust rule in Entra ID (if the terminal is new, first `$APP_ID = az ad app list --display-name $GH_APP --query "[0].appId" -o tsv`):
+
+```powershell
+az ad app federated-credential update --id $APP_ID --federated-credential-id github-main --parameters infra/github-federated-credential.json
+```
+
+Run the failed deploy again (it reuses the same green CI, no push needed):
+
+```powershell
+gh run rerun 38229036853 --repo $GH_REPO
+```
+
+```powershell
+gh run watch 38229036853 --repo $GH_REPO
+```
+
+```
+✓ deploy in 2m26s (ID 114744656642)
+  ✓ Run actions/checkout@v5
+  ✓ Save the commit id
+  ✓ Run azure/login@v2
+  ✓ Install Azure CLI extensions
+  ✓ Download the registered model
+  ✓ Build the image
+  ✓ Test the image
+  ✓ Push the image to ACR
+  ✓ Update the Container App
+  ✓ Check the live API
+ANNOTATIONS
+! Node.js 20 is deprecated. ... azure/login@v2.
+✓ Run Deploy (38229036853) completed with 'success'
+```
+
+What the log shows inside the steps:
+
+| Step | Log line | Meaning |
+|---|---|---|
+| Build the image | `naming to acrchurnub4786.azurecr.io/churn-api:7abc56cce3fc...` | the image tag is the commit id |
+| Update the Container App | `ca-churn-api--0000001` | Azure made a new revision with the new image |
+| Check the live API | `{"status":"ok"}` | the new revision answers over HTTPS |
+
+Check from the laptop that the live API uses the registry model:
+
+```powershell
+Invoke-RestMethod -Method Post -Uri "https://ca-churn-api.yellowcliff-1636b7fd.francecentral.azurecontainerapps.io/predict" -ContentType "application/json" -Body '{"tenure":2,"MonthlyCharges":85.5,"TotalCharges":171,"SeniorCitizen":0,"Contract":"Month-to-month","InternetService":"Fiber optic","PaymentMethod":"Electronic check","PaperlessBilling":"Yes"}'
+```
+
+```
+churn_probability churn
+----------------- -----
+            0.728  True
+```
+
+Meaning: the full chain works — Azure ML trained the model, the registry stored it, GitHub Actions put it in an image and deployed it, with no password anywhere. Same 0.728 as on the laptop.
+
+The `azure/login@v2` Node.js 20 warning is fixed by using `azure/login@v3` in [deploy.yml](../../.github/workflows/deploy.yml).
+
+All runs are listed in [docs/results/pipeline_runs.md](../results/pipeline_runs.md).
+
+Screenshots:
+
+![Deploy green](../screenshots/05_deploy_green.png)
+
+![Deploy log: new revision](../screenshots/05_deploy_log.png)
+
+Entra ID → App registrations → gh-churn-mlops → Certificates & secrets: **Client secrets (0)**, **Federated credentials (1)** — the app has no password at all, only the trust rule for GitHub:
+
+![Federated credential](../screenshots/05_federated_credential.png)

@@ -1,0 +1,45 @@
+# Manual button: submit the Azure ML training job (aml/train-job.yml) from GitHub
+name: Train in Azure ML
+
+on:
+  # Only started by hand from the Actions tab (training costs a little compute)
+  workflow_dispatch:
+
+# id-token: write lets GitHub create the OIDC token for the Azure login
+permissions:
+  id-token: write
+  contents: read
+
+# Resource names (same as scripts/names.ps1)
+env:
+  RG: rg-churn-mlops
+  AML_WORKSPACE: mlw-churn-mlops
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    steps:
+      # Get the code of the repository (aml/train-job.yml and src/)
+      - uses: actions/checkout@v5
+
+      # Log in to Azure with OIDC (no password stored in GitHub)
+      - uses: azure/login@v3
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      # Add the Azure ML commands to the Azure CLI
+      - name: Install the Azure ML extension
+        run: az extension add -n ml --yes
+
+      # Submit the job and keep its name
+      - name: Submit the training job
+        run: |
+          JOB=$(az ml job create --file aml/train-job.yml --resource-group "$RG" --workspace-name "$AML_WORKSPACE" --query name -o tsv)
+          echo "JOB=$JOB" >> "$GITHUB_ENV"
+          echo "Submitted job $JOB"
+
+      # Follow the job log until it finishes (the metrics are printed at the end)
+      - name: Follow the job
+        run: az ml job stream --name "$JOB" --resource-group "$RG" --workspace-name "$AML_WORKSPACE"

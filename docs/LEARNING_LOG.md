@@ -191,3 +191,8 @@ One entry per step: date, what we did, key commands, errors and fixes.
 - CI #2 (run 38199072950) failed in "Run the tests", exit code 3; Deploy #1 was skipped (only runs after green CI).
 - `gh run view 38199072950 --log-failed ... | Select-String INTERNALERROR` → `scripts/test_live_api.py, line 51, sys.exit(), SystemExit`. Cause: pytest collects every `test_*.py`, so it imported (= ran) the live speed script. Locally this also overwrote `api_speed.md` on every `pytest` run.
 - Fix: `testpaths = tests` in `pytest.ini` (`pytest --collect-only -q` → 3 tests). The speed script now appends one row per run.
+- Deploy #2 (run 38229036853) failed at `azure/login`: `AADSTS700213: No matching federated identity record found for presented assertion subject 'repo:ubaidur404786@78012349/azure-churn-mlops@1414838910:ref:refs/heads/main'`. GitHub now puts the owner id and repo id in the OIDC subject. Fix: copy the exact subject from the error into the federated credential and update it.
+- Updated the credential (`az ad app federated-credential update ... --federated-credential-id github-main`), `gh run rerun 38229036853` → success in 2 min 26 s: image tag = commit `7abc56c...`, revision `ca-churn-api--0000001`, live `/health` ok, live `/predict` 0.728.
+- `azure/login@v2` gave the Node.js 20 warning → changed to `azure/login@v3`.
+- Screenshots `05_deploy_green.png`, `05_deploy_log.png` (revision `ca-churn-api--0000001`), `05_federated_credential.png` (Client secrets 0, Federated credentials 1).
+- The portal now shows €175.96 credit: the first real cost (€0.03) has arrived.
