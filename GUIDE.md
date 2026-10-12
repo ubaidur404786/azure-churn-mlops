@@ -17,7 +17,7 @@ The real outputs, errors and screenshots of every command are in the [tutorial](
 |---|---|
 | Nothing yet | all steps, in order |
 | **Only a container image** (laptop or Docker Hub) | 0 → 2 → 3 → 4 → 5 → 6 (→ 7 for secrets) |
-| **Only code on GitHub** | 0 → 2 → 3, then 8 → 12 to train in Azure ML, then 13 → 17 to build and deploy automatically (18 = training button) |
+| **Only code on GitHub** | 0 → 2 → 3, then 8 → 12 to train in Azure ML, then 13 → 17 to build and deploy automatically (18 = training button), then 19 → 21 to monitor |
 
 Every new PowerShell terminal (code way) starts in the project folder with:
 
@@ -257,6 +257,32 @@ If a workflow fails with `AADSTS700213 ... subject 'repo:owner@id/repo@id:ref:re
 | [.github/workflows/train.yml](.github/workflows/train.yml), started with `gh workflow run train.yml --repo $GH_REPO`; it submits [aml/train-job.yml](aml/train-job.yml) and checks the status every 30 s | GitHub → **Actions → Train in Azure ML → Run workflow**, or submit the job in the studio (step 10) |
 
 Details: [Phase 5](docs/tutorial/phase_05_cicd.md).
+
+---
+
+## Part 6 — Monitor the live API
+
+Application Insights and its Log Analytics workspace already exist (step 3), and the Container App already gets the connection string from Key Vault (step 7).
+
+### Step 19. Send requests and logs to Application Insights
+
+| By code | By hand |
+|---|---|
+| In [src/app.py](src/app.py), call `configure_azure_monitor()` **before** `from fastapi import FastAPI`, only when `APPLICATIONINSIGHTS_CONNECTION_STRING` is set. Add `azure-monitor-opentelemetry` to [requirements-api.txt](requirements-api.txt). Push, and the deploy workflow ships it | The code part has no portal button. Check the setting: Container App → **Settings → Containers** → **Environment variables** → `APPLICATIONINSIGHTS_CONNECTION_STRING` (from the Key Vault secret). Then Application Insights → **Overview**: requests, failures and response time appear a few minutes after the first calls |
+
+### Step 20. Ask questions with KQL
+
+| By code | By hand |
+|---|---|
+| The queries in [docs/kql/](docs/kql/requests_per_hour.kql): requests per hour, failed requests, average response time. Count with `sum(itemCount)`, because the app keeps only a sample of the requests | Application Insights → **Monitoring → Logs** → close the welcome windows → switch **Agent** off → **KQL mode** → paste a query → **Run** |
+
+### Step 21. Email when the server fails
+
+| By code | By hand |
+|---|---|
+| `az monitor action-group create --resource-group $RG --name $ACTION_GROUP --short-name churnmail --action email me $EMAIL …` then `az monitor metrics alert create --resource-group $RG --name $ALERT --scopes $APPI_ID --condition "count requests/failed > 5 where request/resultCode includes 500" --window-size 5m --evaluation-frequency 1m --severity 2 --action $ACTION_GROUP …` | Application Insights → **Monitoring → Alerts → + Create → Alert rule** → signal **Failed requests** → filter **Result code = 500** → Greater than 5, Count, every 1 min, lookback 5 min → **+ Create action group** → Email → your address → severity 2 → name → **Review + create** |
+
+Details: [Phase 6](docs/tutorial/phase_06_monitoring.md).
 
 ---
 

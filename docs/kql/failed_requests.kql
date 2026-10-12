@@ -1,0 +1,6 @@
+// Every failed request of the last day (status code 400 or more)
+requests
+| where timestamp > ago(24h)
+| where success == false
+| project timestamp, name, resultCode, duration
+| order by timestamp desc

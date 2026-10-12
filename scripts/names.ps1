@@ -33,6 +33,10 @@ $IDENTITY = "id-churn-api"
 $LAW = "log-churn-mlops"
 $APPI = "appi-churn-mlops"
 
+# monitoring: who gets the email, and the alert rule (Phase 6)
+$ACTION_GROUP = "ag-churn-email"
+$ALERT = "alert-churn-server-errors"
+
 # Tags that every resource gets (plus one feature tag)
 $TAGS = @("project=churn-mlops", "owner=ubaid", "env=demo")
 

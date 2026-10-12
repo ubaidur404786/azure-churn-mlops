@@ -203,3 +203,25 @@ One entry per step: date, what we did, key commands, errors and fixes.
 - Fix: poll `az ml job show --query status` every 30 s instead of streaming.
 - After the fix: run 38234081192 green, job `frank_fowl_hl4mg2hqg3` Starting → Queued → Running → Completed (6 min 27 s).
 - Added README.md (architecture SVG, step list, real results), docs/architecture/ (overview + one step-by-step SVG per phase, with a command/tool/sends/gets table in each tutorial page) and GUIDE.md (every step by code and by hand in the portal, side by side; README kept generic).
+
+### 2026-10-12 — 6.1 Application Insights in the API
+- `src/app.py`: `configure_azure_monitor(logger_name="churn-api")`, only when `APPLICATIONINSIGHTS_CONNECTION_STRING` exists (the Container App gets it from Key Vault since Phase 2). It must run before `from fastapi import FastAPI`, or requests are not recorded. One log line per prediction (result only).
+- `requirements-api.txt`: `azure-monitor-opentelemetry==1.8.11`. Not added to `requirements.txt`: CI and tests never turn monitoring on.
+- Push → CI 38238868630 green → Deploy 38238962692 green in 2 min 33 s.
+- Gotcha: `gh run watch` on "the latest deploy run" right after the push showed the old run (38236964124), because the new Deploy only starts after CI. Wait for CI first.
+- 30 × `/predict` (0.728) + 1 bad request (`422`). Portal Overview after a few minutes: 31 server requests, 1 failed, 79.77 ms average server time.
+- Screenshot `06_app_insights.png` (Essentials panel closed: it shows the subscription ID and the connection string).
+
+### 2026-10-12 — 6.2 KQL queries
+- `docs/kql/requests_per_hour.kql`, `failed_requests.kql`, `average_response_time.kql`, run in Portal → appi-churn-mlops → Logs (Agent toggle off, KQL mode).
+- `count()` gave 14 requests, but the Overview showed 31. Cause: azure-monitor-opentelemetry keeps only a sample of the requests when many arrive per second; each row has `itemCount` (here 2). Fix: `sum(itemCount)` for counts. Averages are still fine.
+- Results: 1 failed request (`POST /predict`, 422, 10:56:57 UTC); `/predict` 27 requests (estimate), 84.3 ms average, 285 ms slowest.
+- Screenshot `06_kql.png`.
+
+### 2026-10-12 — 6.3 Alert rule
+- `az monitor action-group create ... --action email me YOUR_EMAIL` → `(EmailAddressIsNotValid)`. Cause: the placeholder `YOUR_EMAIL` was not replaced. Nothing was created. Fix: put the real address in a `$EMAIL` variable first (typed in the terminal only, never saved in a file).
+- `az monitor action-group create --name ag-churn-email --short-name churnmail --action email me $EMAIL` → `ag-churn-email True Global`.
+- `az monitor metrics alert create --name alert-churn-server-errors --scopes $APPI_ID --condition "count requests/failed > 5 where request/resultCode includes 500" --window-size 5m --evaluation-frequency 1m --severity 2` → created, but printed `line 1:39 mismatched input '/' expecting WHITESPACE` (the CLI condition parser and the `/` in the dimension name). `az monitor metrics alert show --query criteria.allOf[0]...` confirmed the filter `request/resultCode Include ["500"]` was kept.
+- Why only 500: a 422 is the caller's mistake; counting it would let anyone trigger emails.
+- Portal: estimated cost of the condition $0.10/month. Screenshot `06_alert_rule.png` (Essentials closed: subscription ID).
+- Added docs/architecture/phase_06.svg and the command/tool/sends/gets table to the Phase 6 tutorial.

@@ -1,0 +1,6 @@
+// How many requests the API got in each hour of the last day
+// The app keeps only a sample of the requests: itemCount = how many real requests one row stands for
+requests
+| where timestamp > ago(24h)
+| summarize requests = sum(itemCount) by bin(timestamp, 1h)
+| order by timestamp asc

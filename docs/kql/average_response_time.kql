@@ -1,0 +1,5 @@
+// Number of requests, average and slowest response time per endpoint (milliseconds), over the last day
+requests
+| where timestamp > ago(24h)
+| summarize requests = sum(itemCount), average_ms = round(avg(duration), 1), slowest_ms = round(max(duration), 1) by name
+| order by average_ms desc

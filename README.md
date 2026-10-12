@@ -12,6 +12,7 @@ The model is deliberately simple. The focus is the cloud work around it: infrast
 - **Cloud training**: Azure ML runs the training script on a cluster that scales to 0 nodes when idle, logs metrics with MLflow and registers the model.
 - **Serving**: a FastAPI app in a Docker image runs on Azure Container Apps over HTTPS, and scales to zero when nobody uses it.
 - **CI/CD**: every push trains the model and runs the tests. After a green run, the registered model is packed into a new image, tagged with the commit id, and deployed.
+- **Monitoring**: the API sends its requests and logs to Application Insights; saved KQL queries show traffic, failures and speed, and an alert emails when the server fails.
 - **Security**: no keys or passwords in code. GitHub uses OIDC; the app uses a managed identity and Key Vault; every identity gets the smallest role it needs.
 - **Cost control**: free credit only, a budget alert, scale-to-zero everywhere, and the cost of each feature measured.
 
@@ -47,4 +48,4 @@ uvicorn src.app:app --reload
 
 Then open http://localhost:8000/docs.
 
-> Status: the setup, laptop model, Bicep, Container Apps, Azure ML and CI/CD phases are done. Monitoring, the final cost report and the shutdown come next. All Azure resources are deleted at the end of the project.
+> Status: the setup, laptop model, Bicep, Container Apps, Azure ML, CI/CD and monitoring phases are done. The proof pack, the final cost report and the shutdown come next. All Azure resources are deleted at the end of the project.
