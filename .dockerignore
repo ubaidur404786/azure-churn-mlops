@@ -8,6 +8,7 @@ docs
 tests
 scripts
 mlruns
+model_cloud
 mlartifacts
 mlflow.db
 .env

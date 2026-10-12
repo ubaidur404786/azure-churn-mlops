@@ -159,3 +159,32 @@ One entry per step: date, what we did, key commands, errors and fixes.
 
 ### 2026-10-12 — 4.6 Fallback not needed
 - The free-trial quota allowed the 2-vCPU cluster, so laptop training with remote MLflow tracking was not used.
+
+## Phase 5 — CI/CD with GitHub Actions + OIDC
+
+### 2026-10-12 — 5.1 OIDC identity for GitHub
+- `az ad app create --display-name gh-churn-mlops`, `az ad sp create --id $APP_ID`, `az ad app federated-credential create --id $APP_ID --parameters infra/github-federated-credential.json`.
+- Client id `f2d95e42-...`; federated credential `github-main` trusts only `repo:ubaidur404786/azure-churn-mlops:ref:refs/heads/main`. No secret exists.
+
+### 2026-10-12 — 5.2 Contributor on the resource group
+- `az role assignment create --assignee-object-id $SP_ID --assignee-principal-type ServicePrincipal --role Contributor --scope $RG_ID` → ServicePrincipal on rg-churn-mlops. Nothing at subscription level.
+
+### 2026-10-12 — 5.3 Repository variables
+- `gh variable set AZURE_CLIENT_ID / AZURE_TENANT_ID / AZURE_SUBSCRIPTION_ID --repo $GH_REPO`; `gh variable list` shows all 3. Variables, not secrets: they are ids only.
+
+### 2026-10-12 — 5.4 CI workflow
+- `.github/workflows/ci.yml`: checkout, Python 3.12, `pip install -r requirements.txt`, `python src/train.py`, `pytest`. First run 38197476280: success in 1 min 34 s.
+- Warning "Node.js 20 is deprecated" for `checkout@v4` / `setup-python@v5`. Fix: `actions/checkout@v5`, `actions/setup-python@v6`.
+- Screenshot `05_ci_green.png`; link in `docs/results/pipeline_runs.md`.
+
+### 2026-10-12 — 5.5 Version mismatch between Azure ML and the API
+- `az ml model download --name churn-model --version 1 --download-path model_cloud`, `$env:MODEL_PATH = ...`, `pytest` → `AttributeError: Can't get attribute '_RemainderColsList'` plus `InconsistentVersionWarning ... from version 1.5.2 when using version 1.9.1`.
+- Cause: the curated `sklearn-1.5` env (Python 3.10, numpy 1.22, pandas 1.5, scikit-learn 1.5.2) pickled classes that 1.9.1 no longer has.
+- Fix: pin `scikit-learn==1.5.2`, `numpy==2.1.3`, `pandas==2.2.3`, `joblib==1.4.2` in `requirements.txt` and `requirements-api.txt`. Tested in a scratch venv: loads without warning, predicts 0.728. A custom AML environment was rejected (needs an image build and a second registry).
+- Also: a second run of `test_live_api.py` on a warm app overwrote `docs/results/api_speed.md` with a 0.42 s "cold start". Restored the real result; the script now refuses to save when the first request is under 5 s.
+- After `pip install -r requirements.txt`, `pytest` with the cloud model → 3 passed.
+- A second `test_live_api.py` run after a real idle period gave cold start 22.95 s, average 357 ms. `api_speed.md` now shows both runs.
+
+### 2026-10-12 — 5.5 Deploy workflow
+- `.github/workflows/deploy.yml`: runs after CI succeeds on main (`workflow_run`) or by hand. OIDC login → download `churn-model:1` → build image tagged with the commit SHA → test `/health` on the runner → push to ACR → `az containerapp update --image` → check live `/health`.
+- Watch out: `infra/main.bicep` has `imageTag = 'v1'`; a Bicep redeploy must pass the current tag.

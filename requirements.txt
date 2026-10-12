@@ -1,7 +1,8 @@
-# Data and model
-pandas
-scikit-learn
-joblib
+# Data and model (same versions as the API image and the Azure ML environment)
+pandas==2.2.3
+numpy==2.1.3
+scikit-learn==1.5.2
+joblib==1.4.2
 
 # Experiment tracking (local and Azure ML)
 mlflow

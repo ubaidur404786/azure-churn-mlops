@@ -1,0 +1,89 @@
+# CD: after CI passes on main, put the registered model in a new image and deploy it
+name: Deploy
+
+on:
+  # Start when the CI workflow finishes on the main branch
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  # Also allow a manual start from the Actions tab
+  workflow_dispatch:
+
+# id-token: write lets GitHub create the OIDC token for the Azure login
+permissions:
+  id-token: write
+  contents: read
+
+# Resource names (same as scripts/names.ps1)
+env:
+  RG: rg-churn-mlops
+  AML_WORKSPACE: mlw-churn-mlops
+  ACR: acrchurnub4786
+  IMAGE: acrchurnub4786.azurecr.io/churn-api
+  CA: ca-churn-api
+  MODEL_NAME: churn-model
+  MODEL_VERSION: "1"
+
+jobs:
+  deploy:
+    # Deploy only if CI succeeded (or if started by hand)
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      # Get the exact commit that CI tested
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      # Keep the commit id: it becomes the image tag
+      - name: Save the commit id
+        run: echo "TAG=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      # Log in to Azure with OIDC (no password stored in GitHub)
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      # Add the Azure ML and Container Apps commands to the Azure CLI
+      - name: Install Azure CLI extensions
+        run: |
+          az extension add -n ml --yes
+          az extension add -n containerapp --yes
+
+      # Download the model from the Azure ML registry into model/model.pkl
+      - name: Download the registered model
+        run: |
+          az ml model download --name "$MODEL_NAME" --version "$MODEL_VERSION" --download-path model_cloud --resource-group "$RG" --workspace-name "$AML_WORKSPACE"
+          mkdir -p model
+          cp "$(find model_cloud -name model.pkl)" model/model.pkl
+
+      # Build the API image, tagged with the commit id
+      - name: Build the image
+        run: docker build -t "$IMAGE:$TAG" .
+
+      # Start the image on the runner and check /health before pushing it
+      - name: Test the image
+        run: |
+          docker run -d --name api -p 8000:8000 "$IMAGE:$TAG"
+          sleep 5
+          curl --fail --retry 5 --retry-delay 3 --retry-all-errors http://localhost:8000/health
+          docker stop api
+
+      # Push the image to our private registry
+      - name: Push the image to ACR
+        run: |
+          az acr login --name "$ACR"
+          docker push "$IMAGE:$TAG"
+
+      # Tell the Container App to run the new image (creates a new revision)
+      - name: Update the Container App
+        run: az containerapp update --name "$CA" --resource-group "$RG" --image "$IMAGE:$TAG" --query properties.latestRevisionName -o tsv
+
+      # Call the live API to check the new version answers
+      - name: Check the live API
+        run: |
+          URL=$(az containerapp show --name "$CA" --resource-group "$RG" --query properties.configuration.ingress.fqdn -o tsv)
+          curl --fail --retry 10 --retry-delay 6 --retry-all-errors "https://$URL/health"

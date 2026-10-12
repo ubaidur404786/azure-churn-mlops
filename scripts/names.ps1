@@ -39,5 +39,8 @@ $TAGS = @("project=churn-mlops", "owner=ubaid", "env=demo")
 # GitHub repository
 $GH_REPO = "ubaidur404786/azure-churn-mlops"
 
+# Entra ID app that GitHub Actions uses to log in to Azure (OIDC, no password)
+$GH_APP = "gh-churn-mlops"
+
 # Show that the names are loaded
 Write-Host "Names loaded for $RG in $LOCATION"

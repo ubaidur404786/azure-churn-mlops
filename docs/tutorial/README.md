@@ -22,3 +22,4 @@ Every new terminal starts with:
 | 2 — Azure resources with Bicep | [phase_02_bicep.md](phase_02_bicep.md) |
 | 3 — Live API on Azure Container Apps | [phase_03_container_apps.md](phase_03_container_apps.md) |
 | 4 — Train in Azure Machine Learning | [phase_04_azure_ml.md](phase_04_azure_ml.md) |
+| 5 — CI/CD with GitHub Actions + OIDC | [phase_05_cicd.md](phase_05_cicd.md) |

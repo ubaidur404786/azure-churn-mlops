@@ -44,6 +44,12 @@ def send_request():
 answer, cold_start = send_request()
 print(f"cold start: {cold_start:.2f} s, answer: {answer}")
 
+# A fast first request means the app was already awake: do not overwrite the real result
+if cold_start < 5:
+    print("The app was already awake, so this is not a cold start.")
+    print("Wait about 10 minutes without using the API, then run again. Nothing saved.")
+    sys.exit()
+
 # Then send the normal requests while the app is awake
 times = []
 for number in range(1, NUMBER_OF_REQUESTS + 1):

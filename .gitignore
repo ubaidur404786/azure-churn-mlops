@@ -3,6 +3,7 @@
 
 # Trained model files (downloaded from the Azure ML registry instead)
 model/
+model_cloud/
 
 # Python cache and virtual environment
 __pycache__/
