@@ -66,7 +66,7 @@ All screenshots: [docs/screenshots/](docs/screenshots/).
 
 ## Deploy it in 4 commands
 
-After `az login`, `. .\scripts\names.ps1` and `$USER_ID = az ad signed-in-user show --query id -o tsv` (details and the one-time setup, such as the training cluster and the GitHub login, are in [GUIDE.md](GUIDE.md)):
+After `az login`, `. .\scripts\names.ps1` and `$USER_ID = az ad signed-in-user show --query id -o tsv`, plus a one-time setup: the training cluster ([aml/cluster.yml](aml/cluster.yml)), the data asset, and the GitHub login with OIDC ([infra/github-federated-credential.json](infra/github-federated-credential.json)).
 
 ```powershell
 az group create --name $RG --location $LOCATION --tags $TAGS
@@ -86,11 +86,21 @@ git push
 
 The push runs CI, then the Deploy workflow builds the image with the registered model and updates the Container App.
 
-## Learn and rebuild it
+## How it works, step by step
 
-- [GUIDE.md](GUIDE.md): every step to rebuild the project, **by code and by hand in the Azure portal side by side**.
-- [Tutorial](docs/tutorial/README.md): one page per phase with a diagram, each command, its real output, the errors met and their fixes, and screenshots.
-- [Revision notes](docs/revision/): the project story, a services cheat sheet, interview questions and all commands.
+1. `src/train.py` reads `data/churn.csv`, trains a logistic regression and logs the metrics with MLflow.
+2. In Azure ML, the same script runs as a job on a CPU cluster (0 nodes when idle). The model is saved in the model registry as `churn-model`.
+3. `src/app.py` (FastAPI) loads the model and answers `POST /predict` with a churn probability.
+4. The `Dockerfile` packs the app and the model into an image, which is stored in Azure Container Registry.
+5. Azure Container Apps runs the image over HTTPS. A managed identity pulls the image and reads one secret from Key Vault.
+6. On every push, GitHub Actions trains and tests (`ci.yml`). If they pass, `deploy.yml` logs in with OIDC, gets the registered model, builds an image tagged with the commit id, and updates the app.
+7. The app sends its requests and logs to Application Insights, which are read with KQL ([docs/kql/](docs/kql/failed_requests.kql)). An alert emails when the server fails.
+
+## Problems solved along the way
+
+- **Version mismatch:** the model trained in Azure ML could not be loaded by the API (different scikit-learn versions). Fixed by pinning the same versions for training and serving.
+- **OIDC login failure:** GitHub changed the format of its login token subject. Fixed by trusting the exact new subject in Entra ID.
+- **Sampled telemetry:** KQL `count()` showed fewer requests than really happened. Fixed with `sum(itemCount)`.
 
 ## Run it locally
 
