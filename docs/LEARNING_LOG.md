@@ -240,3 +240,7 @@ One entry per step: date, what we did, key commands, errors and fixes.
 - One more live speed run (`scripts/test_live_api.py`): warm average 570 ms, fastest 237 ms.
 - 7.4 README: CI badge, demo, services table (service → why → file), results, screenshots, "deploy in 4 commands".
 - 7.5 Portal → Cost Management → Cost analysis → Resource groups → expand `rg-churn-mlops`: €0.12 in total (workspace €0.06, registry €0.06). Credit: $199.86 of $200. Screenshot `07_cost_before_shutdown.png` (the workspace tag that shows the subscription ID is greyed out).
+
+### 2026-10-12 — Phase 8 runbook and Phase 10 revision notes
+- `docs/tutorial/phase_08_shutdown.md`: every shutdown command in order (workflows → GitHub variables → Entra app → resource group → checks → purge). Not run yet.
+- `docs/revision/`: project story (EN + FR), services cheat sheet, 40 interview questions, commands cheat sheet, problems and fixes, cost story, CV lines (EN + FR), LinkedIn post and portfolio card.
