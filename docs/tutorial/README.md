@@ -1,6 +1,6 @@
 # Tutorial: build this project step by step
 
-Each page below is one phase. Every page starts with a **step-by-step diagram** of that phase and a table with one row per arrow: the command you type, the tool it calls, what is sent and what comes back. Then, for every step, it shows:
+Each page below is one phase. Every page starts with a **step-by-step diagram** of that phase and a table with one row per arrow: the command, the tool it calls, what is sent and what comes back. Then, for every step, it shows:
 
 - what the step does and why
 - each command exactly as it was run

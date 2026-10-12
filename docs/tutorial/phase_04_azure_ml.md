@@ -4,13 +4,21 @@ Goal: run the same [src/train.py](../../src/train.py) in the cloud, on a small c
 
 ---
 
+## Where this phase fits
+
+The system so far. Coloured boxes marked NEW are added in this phase, grey ones come from earlier phases, and the table under the picture says what each numbered arrow sends and gets back.
+
+![Part 4 architecture](../architecture/arch_04.svg)
+
+---
+
 ## Architecture of this phase
 
 ![phase_04 step by step](../architecture/phase_04.svg)
 
-Read it from top to bottom. Each box at the top is a tool or a service; the dashed line under it is its timeline. Each blue number is one arrow = one call over the network (or inside the laptop). Solid arrow = a request; dashed arrow = the answer that comes back. The table below has one row per number: what you type, which tool is called, what is sent and what comes back.
+Read it from top to bottom. Each box at the top is a tool or a service; the dashed line under it is its timeline. Each blue number is one arrow = one call over the network (or inside the laptop). Solid arrow = a request; dashed arrow = the answer that comes back. The table below has one row per number: the command, which tool is called, what is sent and what comes back.
 
-| # | Command (you type) | Tool called | Sends | Gets back |
+| # | Command | Tool called | Sends | Gets back |
 |---|---|---|---|---|
 | | **4.1  Data asset** | | | |
 | 1 | `az ml data create --name churn-data --version 1 --type uri_file --path data/churn.csv …` | az ml → Storage (workspaceblobstore) | data/churn.csv | file stored under `LocalUpload/<hash>/` |

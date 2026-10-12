@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="1064" viewBox="0 0 1300 1064">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#24292F"/></marker><marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C3C9D0"/></marker></defs>
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<text x="20" y="34" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="20" font-weight="bold" fill="#1F2328" text-anchor="start">Part 2 · All Azure resources from one Bicep file</text>
+<text x="20" y="56" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#57606A" text-anchor="start">Colour + NEW = added in this part · grey = built in an earlier part · blue numbers = the flows in the table below</text>
+<rect x="10" y="75" width="295" height="370" rx="12" fill="#FBFCFE" stroke="#3B6FD8" stroke-width="1.3" stroke-dasharray="6 4"/>
+<text x="24" y="94" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#3B6FD8" text-anchor="start">Developer laptop (Windows, PowerShell)</text>
+<rect x="10" y="462" width="295" height="252" rx="12" fill="#FCFCFD" stroke="#B6BDC5" stroke-width="1.3" stroke-dasharray="6 4"/>
+<text x="24" y="481" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#B6BDC5" text-anchor="start">GitHub (repository + Actions)</text>
+<rect x="330" y="75" width="750" height="735" rx="12" fill="#FBFCFE" stroke="#0078D4" stroke-width="1.3" stroke-dasharray="6 4"/>
+<text x="344" y="94" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#0078D4" text-anchor="start">Microsoft Azure · free trial subscription</text>
+<rect x="345" y="165" width="725" height="640" rx="12" fill="#FBFCFE" stroke="#0078D4" stroke-width="1.3" stroke-dasharray="6 4"/>
+<text x="359" y="184" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#0078D4" text-anchor="start">Resource group rg-churn-mlops · France Central   (left: training and data · right: serving, security, monitoring)</text>
+<rect x="1092" y="75" width="196" height="735" rx="12" fill="#FCFCFD" stroke="#B6BDC5" stroke-width="1.3" stroke-dasharray="6 4"/>
+<text x="1106" y="94" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#B6BDC5" text-anchor="start">Users</text>
+<path d="M280,120 L320,120 L320,130 L350,130" fill="none" stroke="#C3C9D0" stroke-width="1.2" marker-end="url(#g)"/>
+<path d="M1060,130 L1105,130" fill="none" stroke="#C3C9D0" stroke-width="1.2" marker-end="url(#g)"/>
+<path d="M40,112 L25,112 L25,510 L40,510" fill="none" stroke="#C3C9D0" stroke-width="1.2" marker-end="url(#g)"/>
+<path d="M160,140 L160,158" fill="none" stroke="#C3C9D0" stroke-width="1.2" marker-end="url(#g)"/>
+<path d="M160,198 L160,216" fill="none" stroke="#C3C9D0" stroke-width="1.2" marker-end="url(#g)"/>
+<path d="M160,256 L160,274" fill="none" stroke="#C3C9D0" stroke-width="1.2" marker-end="url(#g)"/>
+<rect x="40" y="100" width="240" height="40" rx="7" fill="#F6F8FA" stroke="#B6BDC5" stroke-width="1.2"/>
+<text x="160.0" y="117" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#8C959F" text-anchor="middle">Tools</text>
+<text x="160.0" y="132" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#8C959F" text-anchor="middle">az · git · gh · docker · Python</text>
+<rect x="40" y="158" width="240" height="40" rx="7" fill="#F6F8FA" stroke="#B6BDC5" stroke-width="1.2"/>
+<text x="160.0" y="175" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#8C959F" text-anchor="middle">train.py + churn.csv</text>
+<text x="160.0" y="190" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#8C959F" text-anchor="middle">makes model/model.pkl</text>
+<rect x="40" y="216" width="240" height="40" rx="7" fill="#F6F8FA" stroke="#B6BDC5" stroke-width="1.2"/>
+<text x="160.0" y="233" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#8C959F" text-anchor="middle">FastAPI app (src/app.py)</text>
+<text x="160.0" y="248" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#8C959F" text-anchor="middle">/health · /predict</text>
+<rect x="40" y="274" width="240" height="40" rx="7" fill="#F6F8FA" stroke="#B6BDC5" stroke-width="1.2"/>
+<text x="160.0" y="291" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#8C959F" text-anchor="middle">Docker image churn-api</text>
+<text x="160.0" y="306" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#8C959F" text-anchor="middle">uvicorn on port 8000</text>
+<rect x="40" y="332" width="240" height="40" rx="7" fill="#EEF4FF" stroke="#3B6FD8" stroke-width="2.2"/>
+<text x="160.0" y="349" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1F2328" text-anchor="middle">infra/main.bicep</text>
+<text x="160.0" y="364" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#57606A" text-anchor="middle">every resource and role as code</text>
+<rect x="246" y="324" width="32" height="15" rx="7" fill="#1A7F37"/>
+<text x="262" y="335" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF" text-anchor="middle">NEW</text>
+<rect x="40" y="490" width="240" height="40" rx="7" fill="#F6F8FA" stroke="#B6BDC5" stroke-width="1.2"/>
+<text x="160.0" y="507" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#8C959F" text-anchor="middle">Repository (main)</text>
+<text x="160.0" y="522" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#8C959F" text-anchor="middle">code · workflows · docs</text>
+<rect x="350" y="110" width="340" height="40" rx="7" fill="#F6F8FA" stroke="#B6BDC5" stroke-width="1.2"/>
+<text x="520.0" y="127" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#8C959F" text-anchor="middle">Resource providers</text>
+<text x="520.0" y="142" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#8C959F" text-anchor="middle">Microsoft.App, ML, … registered</text>
+<rect x="720" y="110" width="340" height="40" rx="7" fill="#F6F8FA" stroke="#B6BDC5" stroke-width="1.2"/>
+<text x="890.0" y="127" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#8C959F" text-anchor="middle">Budget 5 USD / month</text>
+<text x="890.0" y="142" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#8C959F" text-anchor="middle">email at 50 / 80 / 100 %</text>
+<rect x="365" y="200" width="320" height="44" rx="7" fill="#E6F4FC" stroke="#0078D4" stroke-width="2.2"/>
+<text x="525.0" y="217" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1F2328" text-anchor="middle">ML workspace mlw-churn-mlops</text>
+<text x="525.0" y="232" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#57606A" text-anchor="middle">experiments · MLflow metrics</text>
+<rect x="651" y="192" width="32" height="15" rx="7" fill="#1A7F37"/>
+<text x="667" y="203" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF" text-anchor="middle">NEW</text>
+<rect x="365" y="260" width="320" height="44" rx="7" fill="#E6F4FC" stroke="#0078D4" stroke-width="2.2"/>
+<text x="525.0" y="277" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1F2328" text-anchor="middle">Storage account</text>
+<text x="525.0" y="292" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#57606A" text-anchor="middle">workspace files and data</text>
+<rect x="651" y="252" width="32" height="15" rx="7" fill="#1A7F37"/>
+<text x="667" y="263" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF" text-anchor="middle">NEW</text>
+<rect x="725" y="200" width="320" height="44" rx="7" fill="#E6F4FC" stroke="#0078D4" stroke-width="2.2"/>
+<text x="885.0" y="217" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1F2328" text-anchor="middle">Container Registry (Basic)</text>
+<text x="885.0" y="232" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#57606A" text-anchor="middle">admin user off</text>
+<rect x="1011" y="192" width="32" height="15" rx="7" fill="#1A7F37"/>
+<text x="1027" y="203" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF" text-anchor="middle">NEW</text>
+<rect x="725" y="260" width="320" height="44" rx="7" fill="#E6F4FC" stroke="#0078D4" stroke-width="2.2"/>
+<text x="885.0" y="277" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1F2328" text-anchor="middle">Container Apps environment</text>
+<text x="885.0" y="292" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#57606A" text-anchor="middle">Consumption plan</text>
+<rect x="1011" y="252" width="32" height="15" rx="7" fill="#1A7F37"/>
+<text x="1027" y="263" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF" text-anchor="middle">NEW</text>
+<rect x="725" y="320" width="320" height="44" rx="7" fill="#E6F4FC" stroke="#0078D4" stroke-width="2.2"/>
+<text x="885.0" y="337" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1F2328" text-anchor="middle">Managed identity id-churn-api</text>
+<text x="885.0" y="352" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#57606A" text-anchor="middle">AcrPull · Key Vault Secrets User</text>
+<rect x="1011" y="312" width="32" height="15" rx="7" fill="#1A7F37"/>
+<text x="1027" y="323" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF" text-anchor="middle">NEW</text>
+<rect x="725" y="380" width="320" height="44" rx="7" fill="#E6F4FC" stroke="#0078D4" stroke-width="2.2"/>
+<text x="885.0" y="397" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1F2328" text-anchor="middle">Key Vault (RBAC)</text>
+<text x="885.0" y="412" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#57606A" text-anchor="middle">secret: App Insights connection</text>
+<rect x="1011" y="372" width="32" height="15" rx="7" fill="#1A7F37"/>
+<text x="1027" y="383" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF" text-anchor="middle">NEW</text>
+<rect x="725" y="440" width="320" height="44" rx="7" fill="#E6F4FC" stroke="#0078D4" stroke-width="2.2"/>
+<text x="885.0" y="457" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1F2328" text-anchor="middle">Application Insights</text>
+<text x="885.0" y="472" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#57606A" text-anchor="middle">requests · traces · failures</text>
+<rect x="1011" y="432" width="32" height="15" rx="7" fill="#1A7F37"/>
+<text x="1027" y="443" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF" text-anchor="middle">NEW</text>
+<rect x="725" y="500" width="320" height="44" rx="7" fill="#E6F4FC" stroke="#0078D4" stroke-width="2.2"/>
+<text x="885.0" y="517" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1F2328" text-anchor="middle">Log Analytics workspace</text>
+<text x="885.0" y="532" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#57606A" text-anchor="middle">stores the logs, 0.5 GB/day cap</text>
+<rect x="1011" y="492" width="32" height="15" rx="7" fill="#1A7F37"/>
+<text x="1027" y="503" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="9" font-weight="bold" fill="#FFFFFF" text-anchor="middle">NEW</text>
+<rect x="1105" y="110" width="170" height="40" rx="7" fill="#F6F8FA" stroke="#B6BDC5" stroke-width="1.2"/>
+<text x="1190.0" y="127" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#8C959F" text-anchor="middle">Email inbox</text>
+<text x="1190.0" y="142" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#8C959F" text-anchor="middle">budget warnings</text>
+<path d="M280,352 L345,352" fill="none" stroke="#24292F" stroke-width="1.7" marker-end="url(#a)"/>
+<circle cx="312.5" cy="352.0" r="9" fill="#0078D4" stroke="#FFFFFF" stroke-width="1.5"/>
+<text x="312.5" y="356.0" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
+<path d="M1045,335 L1052,335 L1052,222 L1045,222" fill="none" stroke="#24292F" stroke-width="1.7" marker-end="url(#a)"/>
+<circle cx="1052" cy="290" r="9" fill="#0078D4" stroke="#FFFFFF" stroke-width="1.5"/>
+<text x="1052" y="294" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
+<path d="M1045,350 L1060,350 L1060,395 L1045,395" fill="none" stroke="#24292F" stroke-width="1.7" marker-end="url(#a)"/>
+<circle cx="1060" cy="372" r="9" fill="#0078D4" stroke="#FFFFFF" stroke-width="1.5"/>
+<text x="1060" y="376" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
+<path d="M885,484 L885,500" fill="none" stroke="#24292F" stroke-width="1.7" marker-end="url(#a)"/>
+<circle cx="901.0" cy="492.0" r="9" fill="#0078D4" stroke="#FFFFFF" stroke-width="1.5"/>
+<text x="901.0" y="496.0" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#FFFFFF" text-anchor="middle">4</text>
+<path d="M525,244 L525,260" fill="none" stroke="#24292F" stroke-width="1.7" marker-end="url(#a)"/>
+<circle cx="541.0" cy="252.0" r="9" fill="#0078D4" stroke="#FFFFFF" stroke-width="1.5"/>
+<text x="541.0" y="256.0" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#FFFFFF" text-anchor="middle">5</text>
+<path d="M885,440 L885,424" fill="none" stroke="#24292F" stroke-width="1.7" marker-end="url(#a)"/>
+<circle cx="901.0" cy="432.0" r="9" fill="#0078D4" stroke="#FFFFFF" stroke-width="1.5"/>
+<text x="901.0" y="436.0" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#FFFFFF" text-anchor="middle">6</text>
+<rect x="20" y="830" width="1260" height="28" rx="4" fill="#F0F3F6"/>
+<text x="44" y="849" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1F2328" text-anchor="middle">#</text>
+<text x="80" y="849" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1F2328" text-anchor="start">From → to</text>
+<text x="370" y="849" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1F2328" text-anchor="start">Sends (input)</text>
+<text x="830" y="849" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1F2328" text-anchor="start">Gets back (output)</text>
+<circle cx="44" cy="870" r="9" fill="#0078D4"/>
+<text x="44" y="874" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
+<text x="80" y="874" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1F2328" text-anchor="start">Laptop → Resource Manager</text>
+<text x="370" y="874" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1F2328" text-anchor="start">az deployment group create -f infra/main.bicep</text>
+<text x="830" y="874" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1F2328" text-anchor="start">8 resources + 3 roles, each with a feature tag</text>
+<rect x="20" y="882" width="1260" height="24" fill="#FAFBFC"/>
+<circle cx="44" cy="894" r="9" fill="#0078D4"/>
+<text x="44" y="898" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
+<text x="80" y="898" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1F2328" text-anchor="start">Identity → Registry</text>
+<text x="370" y="898" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1F2328" text-anchor="start">role AcrPull</text>
+<text x="830" y="898" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1F2328" text-anchor="start">can pull images, no password</text>
+<circle cx="44" cy="918" r="9" fill="#0078D4"/>
+<text x="44" y="922" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
+<text x="80" y="922" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1F2328" text-anchor="start">Identity → Key Vault</text>
+<text x="370" y="922" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1F2328" text-anchor="start">role Key Vault Secrets User</text>
+<text x="830" y="922" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1F2328" text-anchor="start">can read secrets</text>
+<rect x="20" y="930" width="1260" height="24" fill="#FAFBFC"/>
+<circle cx="44" cy="942" r="9" fill="#0078D4"/>
+<text x="44" y="946" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#FFFFFF" text-anchor="middle">4</text>
+<text x="80" y="946" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1F2328" text-anchor="start">App Insights → Log Analytics</text>
+<text x="370" y="946" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1F2328" text-anchor="start">every log and request</text>
+<text x="830" y="946" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1F2328" text-anchor="start">stored, ready for KQL</text>
+<circle cx="44" cy="966" r="9" fill="#0078D4"/>
+<text x="44" y="970" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#FFFFFF" text-anchor="middle">5</text>
+<text x="80" y="970" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1F2328" text-anchor="start">ML workspace → Storage</text>
+<text x="370" y="970" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1F2328" text-anchor="start">files, data and job outputs</text>
+<text x="830" y="970" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1F2328" text-anchor="start">default datastore</text>
+<rect x="20" y="978" width="1260" height="24" fill="#FAFBFC"/>
+<circle cx="44" cy="990" r="9" fill="#0078D4"/>
+<text x="44" y="994" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="bold" fill="#FFFFFF" text-anchor="middle">6</text>
+<text x="80" y="994" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#1F2328" text-anchor="start">App Insights → Key Vault</text>
+<text x="370" y="994" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1F2328" text-anchor="start">connection string as secret appinsights-connection-string</text>
+<text x="830" y="994" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#1F2328" text-anchor="start">a secret that never goes to Git</text>
+</svg>

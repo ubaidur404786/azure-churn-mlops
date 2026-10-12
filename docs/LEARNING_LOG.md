@@ -225,3 +225,10 @@ One entry per step: date, what we did, key commands, errors and fixes.
 - Why only 500: a 422 is the caller's mistake; counting it would let anyone trigger emails.
 - Portal: estimated cost of the condition $0.10/month. Screenshot `06_alert_rule.png` (Essentials closed: subscription ID).
 - Added docs/architecture/phase_06.svg and the command/tool/sends/gets table to the Phase 6 tutorial.
+
+### 2026-10-12 — Guide rewrite (by code next to by hand, with screenshots)
+- GUIDE.md reordered into Parts 0–6 (same order as the phases). Each step now shows the command and the portal clicks side by side, with a real screenshot of the portal, studio or GitHub screen.
+- 16 new screenshots in `docs/screenshots/guide/`, taken on the live resources (top bar with the account cropped; object ids and GitHub variable values hidden). Create forms were only opened, never submitted.
+- One growing architecture diagram per part, `docs/architecture/arch_00.svg` … `arch_06.svg`: new boxes in colour, earlier ones grey, numbered arrows with what each sends and gets back. Added to the guide and to every tutorial page.
+- Wording made neutral ("Developer laptop", "Command") so the docs read as project documentation, not instructions to one person.
+- Cost analysis at this point: about €0.04 for the resource group; the `feature` tag grouping is not in the cost data yet (8–48 h delay).

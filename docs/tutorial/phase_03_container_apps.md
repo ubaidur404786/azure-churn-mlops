@@ -4,13 +4,21 @@ Goal: run the same Docker image from Phase 1 on Azure, with a public HTTPS addre
 
 ---
 
+## Where this phase fits
+
+The system so far. Coloured boxes marked NEW are added in this phase, grey ones come from earlier phases, and the table under the picture says what each numbered arrow sends and gets back.
+
+![Part 3 architecture](../architecture/arch_03.svg)
+
+---
+
 ## Architecture of this phase
 
 ![phase_03 step by step](../architecture/phase_03.svg)
 
-Read it from top to bottom. Each box at the top is a tool or a service; the dashed line under it is its timeline. Each blue number is one arrow = one call over the network (or inside the laptop). Solid arrow = a request; dashed arrow = the answer that comes back. The table below has one row per number: what you type, which tool is called, what is sent and what comes back.
+Read it from top to bottom. Each box at the top is a tool or a service; the dashed line under it is its timeline. Each blue number is one arrow = one call over the network (or inside the laptop). Solid arrow = a request; dashed arrow = the answer that comes back. The table below has one row per number: the command, which tool is called, what is sent and what comes back.
 
-| # | Command (you type) | Tool called | Sends | Gets back |
+| # | Command | Tool called | Sends | Gets back |
 |---|---|---|---|---|
 | | **3.1  Build the image and push it to the private registry** | | | |
 | 1 | `az acr login --name $ACR` | az CLI → ACR | your Azure login token (no password) | Docker is logged in to the registry |

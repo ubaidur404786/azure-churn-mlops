@@ -4,13 +4,21 @@ Goal: make sure the card can never be charged, set up a budget alert, estimate t
 
 ---
 
+## Where this phase fits
+
+The system so far. Coloured boxes marked NEW are added in this phase, grey ones come from earlier phases, and the table under the picture says what each numbered arrow sends and gets back.
+
+![Part 0 architecture](../architecture/arch_00.svg)
+
+---
+
 ## Architecture of this phase
 
 ![phase_00 step by step](../architecture/phase_00.svg)
 
-Read it from top to bottom. Each box at the top is a tool or a service; the dashed line under it is its timeline. Each blue number is one arrow = one call over the network (or inside the laptop). Solid arrow = a request; dashed arrow = the answer that comes back. The table below has one row per number: what you type, which tool is called, what is sent and what comes back.
+Read it from top to bottom. Each box at the top is a tool or a service; the dashed line under it is its timeline. Each blue number is one arrow = one call over the network (or inside the laptop). Solid arrow = a request; dashed arrow = the answer that comes back. The table below has one row per number: the command, which tool is called, what is sent and what comes back.
 
-| # | Command (you type) | Tool called | Sends | Gets back |
+| # | Command | Tool called | Sends | Gets back |
 |---|---|---|---|---|
 | | **0.1–0.2  Check the credit and set a budget (portal, free)** | | | |
 | 1 | Portal → Subscriptions; Cost Management → Budgets | browser | budget amount, alert levels 5/50/80/100 % | budget saved, alerts by email |
@@ -110,7 +118,7 @@ code --install-extension ms-vscode.vscode-node-azure-pack --install-extension ms
 
 ## 0.5 Log in to Azure and GitHub
 
-Log in to Azure (a browser window opens; you type the password there, never in the terminal):
+Log in to Azure (a browser window opens; the password is typed there, never in the terminal):
 
 ```powershell
 az login

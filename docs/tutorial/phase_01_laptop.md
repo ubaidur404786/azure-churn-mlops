@@ -4,13 +4,21 @@ Goal: train a small churn model, serve it with a web API, test it, and package i
 
 ---
 
+## Where this phase fits
+
+The system so far. Coloured boxes marked NEW are added in this phase, grey ones come from earlier phases, and the table under the picture says what each numbered arrow sends and gets back.
+
+![Part 1 architecture](../architecture/arch_01.svg)
+
+---
+
 ## Architecture of this phase
 
 ![phase_01 step by step](../architecture/phase_01.svg)
 
-Read it from top to bottom. Each box at the top is a tool or a service; the dashed line under it is its timeline. Each blue number is one arrow = one call over the network (or inside the laptop). Solid arrow = a request; dashed arrow = the answer that comes back. The table below has one row per number: what you type, which tool is called, what is sent and what comes back.
+Read it from top to bottom. Each box at the top is a tool or a service; the dashed line under it is its timeline. Each blue number is one arrow = one call over the network (or inside the laptop). Solid arrow = a request; dashed arrow = the answer that comes back. The table below has one row per number: the command, which tool is called, what is sent and what comes back.
 
-| # | Command (you type) | Tool called | Sends | Gets back |
+| # | Command | Tool called | Sends | Gets back |
 |---|---|---|---|---|
 | | **1.1  Virtual environment and dataset** | | | |
 | 1 | `python -m venv .venv` | Python | — | .venv folder; prompt shows (.venv) |

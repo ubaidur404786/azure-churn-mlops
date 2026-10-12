@@ -12,13 +12,21 @@ So this phase is mostly code and queries. No new paid resource is needed.
 
 ---
 
+## Where this phase fits
+
+The system so far. Coloured boxes marked NEW are added in this phase, grey ones come from earlier phases, and the table under the picture says what each numbered arrow sends and gets back.
+
+![Part 6 architecture](../architecture/arch_06.svg)
+
+---
+
 ## Architecture of this phase
 
 ![phase_06 step by step](../architecture/phase_06.svg)
 
 Read it from top to bottom. Each box at the top is a tool or a service; the dashed line under it is its timeline. Each blue number is one arrow = one call over the network. Solid arrow = a request; dashed arrow = the answer or an automatic message. The table has one row per number.
 
-| # | Command (you type) | Tool called | Sends | Gets back |
+| # | Command | Tool called | Sends | Gets back |
 |---|---|---|---|---|
 | | **6.1  The API sends its requests and logs** | | | |
 | 1 | `git push` | git → GitHub | new app.py + requirements-api.txt | CI, then Deploy start |
