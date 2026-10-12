@@ -1,0 +1,35 @@
+# CI: on every push and pull request, train the model and run the tests
+name: CI
+
+on:
+  push:
+  pull_request:
+
+# This workflow only reads the code
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      # Get the code of the repository
+      - uses: actions/checkout@v4
+
+      # Install Python 3.12 (same as the laptop) and reuse downloaded packages
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      # Install the project packages
+      - name: Install packages
+        run: pip install -r requirements.txt
+
+      # Train the model (creates model/model.pkl, needed by the tests)
+      - name: Train the model
+        run: python src/train.py
+
+      # Run the API tests
+      - name: Run the tests
+        run: pytest
