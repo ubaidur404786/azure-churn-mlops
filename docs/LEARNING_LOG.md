@@ -132,3 +132,30 @@ One entry per step: date, what we did, key commands, errors and fixes.
 - `scripts/test_live_api.py` (built-in `urllib`, no extra package): 1 cold request, then 20 warm requests; writes `docs/results/api_speed.md`.
 - Result after about 10 minutes idle: cold start 25.91 s. Average of 20 requests 513 ms, but the first 2 were still warming up (4.5 s, 1.7 s). Requests 3–20 average 223 ms; median 238 ms.
 - Lesson: scale to zero = €0 when idle, paid for with a ~26 s first request.
+
+## Phase 4 — Train in Azure Machine Learning
+
+### 2026-10-12 — 4.1 Data asset
+- `az ml data create --name churn-data --version 1 --type uri_file --path data/churn.csv ...` uploaded the CSV to `workspaceblobstore` (storage `stchurnub4786`).
+- A data asset is a named, versioned pointer: jobs use `churn-data:1`, not a laptop path.
+
+### 2026-10-12 — 4.2 Compute cluster
+- `aml/cluster.yml` + `az ml compute create --file aml/cluster.yml ...` → `cpu-cluster` Succeeded: Standard_DS11_v2, dedicated, min 0 / max 1, off after 120 s idle, tagged `feature=training`. No quota error.
+- `ssh_public_access_enabled: true` is harmless: no SSH user or key was set.
+
+### 2026-10-12 — 4.3 Cloud training job
+- `aml/train-job.yml`: command job, `code: ../src`, input `churn-data:1`, output folder `model`, curated env `sklearn-1.5` (version 55), compute `cpu-cluster`.
+- `$JOB = az ml job create --file aml/train-job.yml ... --query name -o tsv`, then `az ml job stream --name $JOB ...` → job `joyful_grass_9w8dwr40k9` Completed in 3 min 6 s.
+- Metrics in the studio: accuracy 0.7956, f1 0.5838, roc_auc 0.8375 — identical to the laptop (same code, data and split).
+- The red "experimental class ... NativeCommandError" lines are harmless warnings on stderr; PowerShell 5.1 colours all stderr red.
+
+### 2026-10-12 — 4.4 Model registered
+- `az ml model create --name churn-model --version 1 --type custom_model --path "azureml://jobs/$JOB/outputs/model" ...` → `churn-model:1`, `job_name` joyful_grass_9w8dwr40k9 (lineage back to the job, data and commit).
+- To do in Phase 5: this model was trained with scikit-learn 1.5 (curated env) but the API image pins 1.9.1. Align the versions before deploy loads it.
+
+### 2026-10-12 — 4.5 Cluster back to 0 nodes
+- `az ml compute list-nodes --name $AML_CLUSTER ...` → `[]`. Studio: current node count 0, "Succeeded (0 nodes)" at 4:23 AM, about 5 minutes after the job ended (120 s idle + removal).
+- Screenshots `04_model_registry.png` (subscription id hidden) and `04_cluster_zero_nodes.png`.
+
+### 2026-10-12 — 4.6 Fallback not needed
+- The free-trial quota allowed the 2-vCPU cluster, so laptop training with remote MLflow tracking was not used.

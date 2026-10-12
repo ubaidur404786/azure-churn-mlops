@@ -1,0 +1,23 @@
+$schema: https://azuremlschemas.azureedge.net/latest/amlCompute.schema.json
+
+# Name of the cluster (same as $AML_CLUSTER in scripts/names.ps1)
+name: cpu-cluster
+type: amlcompute
+
+# One small CPU machine: 2 vCPU, 14 GB memory
+size: Standard_DS11_v2
+tier: dedicated
+
+# No machine when idle (no cost), at most 1 machine
+min_instances: 0
+max_instances: 1
+
+# Turn the machine off after 120 seconds without work
+idle_time_before_scale_down: 120
+
+# Same tags as every other resource
+tags:
+  project: churn-mlops
+  owner: ubaid
+  env: demo
+  feature: training

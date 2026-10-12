@@ -13,3 +13,5 @@ One line at the start and end of every phase. Azure cost data arrives 8–48 hou
 | 2026-10-12 | Phase 2 end | €175.99 | €0.00 (cost data 8–48 h late) | ACR Basic expected (~€0.16/day) |
 | 2026-10-12 | Phase 3 start | €175.99 | €0.00 (cost data 8–48 h late) | ACR Basic expected (~€0.16/day) |
 | 2026-10-12 | Phase 3 end | €175.99 | €0.00 (cost data 8–48 h late) | ACR Basic expected (~€0.16/day); Container App €0 (scales to 0, free grant) |
+| 2026-10-12 | Phase 4 start | €175.99 | €0.00 (cost data 8–48 h late) | ACR Basic expected (~€0.16/day) |
+| 2026-10-12 | Phase 4 end | €175.99 | €0.00 (cost data 8–48 h late) | ACR Basic expected (~€0.16/day); training job ~€0.01 (3 min on 1 node) |

@@ -1,0 +1,37 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+
+# Names shown in Azure ML studio
+display_name: train-churn-model
+experiment_name: churn-training
+description: Train the churn model with src/train.py on the cpu-cluster
+
+# Upload only the src folder (not the data, the virtual environment or the docs)
+code: ../src
+
+# Run the same training script as on the laptop, with paths given by Azure ML
+command: >-
+  python train.py
+  --data ${{inputs.data}}
+  --model-dir ${{outputs.model}}
+
+# Input: the dataset uploaded in step 4.1
+inputs:
+  data:
+    type: uri_file
+    path: azureml:churn-data:1
+
+# Output: the folder where train.py saves model.pkl
+outputs:
+  model:
+    type: uri_folder
+
+# Ready-made scikit-learn environment from Microsoft (no image to build)
+environment: azureml://registries/azureml/environments/sklearn-1.5/labels/latest
+
+# Run on our small cluster
+compute: azureml:cpu-cluster
+
+# Same tags as the resources
+tags:
+  project: churn-mlops
+  feature: training
