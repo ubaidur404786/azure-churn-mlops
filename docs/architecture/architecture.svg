@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="830" viewBox="0 0 1500 830">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3A3F45"/></marker></defs>
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<rect x="20" y="80" width="280" height="720" rx="12" fill="#F7FAFF" stroke="#3B6FD8" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="38" y="102" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#3B6FD8" text-anchor="start">  Your laptop (Windows, PowerShell)</text>
+<rect x="330" y="80" width="280" height="500" rx="12" fill="#FBFAFE" stroke="#6E56CF" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="348" y="102" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#6E56CF" text-anchor="start">GitHub (public repo + Actions)</text>
+<rect x="330" y="620" width="280" height="180" rx="12" fill="#FFFCF3" stroke="#B07800" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="348" y="642" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#B07800" text-anchor="start">Microsoft Entra ID</text>
+<rect x="640" y="80" width="610" height="720" rx="12" fill="#F5FBFE" stroke="#0078D4" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="658" y="102" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#0078D4" text-anchor="start">Microsoft Azure · rg-churn-mlops · francecentral</text>
+<rect x="1280" y="400" width="200" height="170" rx="12" fill="#F6FCF8" stroke="#2E8B57" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="1298" y="422" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#2E8B57" text-anchor="start">Users</text>
+<rect x="660" y="120" width="570" height="200" rx="12" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="678" y="142" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#0078D4" text-anchor="start">Azure Machine Learning (training)</text>
+<rect x="660" y="440" width="570" height="180" rx="12" fill="#FFFFFF" stroke="#0078D4" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="678" y="462" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#0078D4" text-anchor="start">Serving</text>
+<rect x="40" y="120" width="240" height="75" rx="8" fill="#EEF4FF" stroke="#3B6FD8" stroke-width="1.5"/>
+<text x="160.0" y="140" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1F2328" text-anchor="middle">Code + data</text>
+<text x="160.0" y="158" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">src/train.py · src/app.py</text>
+<text x="160.0" y="173" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">data/churn.csv · tests/</text>
+<rect x="40" y="215" width="240" height="60" rx="8" fill="#EEF4FF" stroke="#3B6FD8" stroke-width="1.5"/>
+<text x="160.0" y="235" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1F2328" text-anchor="middle">infra/main.bicep</text>
+<text x="160.0" y="253" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">every Azure resource as code</text>
+<rect x="40" y="295" width="240" height="60" rx="8" fill="#EEF4FF" stroke="#3B6FD8" stroke-width="1.5"/>
+<text x="160.0" y="315" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1F2328" text-anchor="middle">aml/*.yml</text>
+<text x="160.0" y="333" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">cluster + training job</text>
+<rect x="40" y="375" width="240" height="60" rx="8" fill="#EEF4FF" stroke="#3B6FD8" stroke-width="1.5"/>
+<text x="160.0" y="395" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1F2328" text-anchor="middle">Dockerfile</text>
+<text x="160.0" y="413" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">API image (python:3.12-slim)</text>
+<rect x="40" y="455" width="240" height="75" rx="8" fill="#EEF4FF" stroke="#3B6FD8" stroke-width="1.5"/>
+<text x="160.0" y="475" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1F2328" text-anchor="middle">Tools</text>
+<text x="160.0" y="493" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">az · docker · git · gh</text>
+<text x="160.0" y="508" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">pytest · uvicorn · MLflow</text>
+<rect x="40" y="550" width="240" height="75" rx="8" fill="#EEF4FF" stroke="#3B6FD8" stroke-width="1.5"/>
+<text x="160.0" y="570" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1F2328" text-anchor="middle">Cost safety</text>
+<text x="160.0" y="588" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">budget alert 5 USD (email)</text>
+<text x="160.0" y="603" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">feature tag on every resource</text>
+<rect x="350" y="120" width="240" height="55" rx="8" fill="#F3F0FA" stroke="#6E56CF" stroke-width="1.5"/>
+<text x="470.0" y="140" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1F2328" text-anchor="middle">Repository (main)</text>
+<text x="470.0" y="158" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">code · workflows · docs</text>
+<rect x="350" y="195" width="240" height="55" rx="8" fill="#F3F0FA" stroke="#6E56CF" stroke-width="1.5"/>
+<text x="470.0" y="215" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1F2328" text-anchor="middle">train.yml (button)</text>
+<text x="470.0" y="233" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">submits the Azure ML job</text>
+<rect x="350" y="270" width="240" height="55" rx="8" fill="#F3F0FA" stroke="#6E56CF" stroke-width="1.5"/>
+<text x="470.0" y="290" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1F2328" text-anchor="middle">ci.yml (every push)</text>
+<text x="470.0" y="308" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">install · train · pytest</text>
+<rect x="350" y="455" width="240" height="110" rx="8" fill="#F3F0FA" stroke="#6E56CF" stroke-width="1.5"/>
+<text x="470.0" y="475" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1F2328" text-anchor="middle">deploy.yml (after green CI)</text>
+<text x="470.0" y="493" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">download the registered model</text>
+<text x="470.0" y="508" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">build + test the image</text>
+<text x="470.0" y="523" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">push it · update the app</text>
+<text x="470.0" y="538" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">image tag = commit id</text>
+<rect x="350" y="655" width="240" height="125" rx="8" fill="#FFF6E0" stroke="#B07800" stroke-width="1.5"/>
+<text x="470.0" y="675" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1F2328" text-anchor="middle">App gh-churn-mlops</text>
+<text x="470.0" y="693" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">federated credential:</text>
+<text x="470.0" y="708" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">repo + branch main only</text>
+<text x="470.0" y="723" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">0 secrets</text>
+<text x="470.0" y="738" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">Contributor on the RG</text>
+<rect x="675" y="155" width="165" height="150" rx="8" fill="#E6F4FC" stroke="#0078D4" stroke-width="1.5"/>
+<text x="757.5" y="175" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1F2328" text-anchor="middle">Data asset</text>
+<text x="757.5" y="193" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">churn-data:1</text>
+<text x="757.5" y="208" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">churn.csv in Storage</text>
+<rect x="870" y="155" width="165" height="150" rx="8" fill="#E6F4FC" stroke="#0078D4" stroke-width="1.5"/>
+<text x="952.5" y="175" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1F2328" text-anchor="middle">Training job</text>
+<text x="952.5" y="193" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">src/train.py</text>
+<text x="952.5" y="208" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">env sklearn-1.5</text>
+<text x="952.5" y="223" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">cpu-cluster: 0–1 node,</text>
+<text x="952.5" y="238" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">off after 120 s idle</text>
+<text x="952.5" y="253" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">MLflow metrics</text>
+<rect x="1065" y="155" width="150" height="150" rx="8" fill="#E6F4FC" stroke="#0078D4" stroke-width="1.5"/>
+<text x="1140.0" y="175" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1F2328" text-anchor="middle">Model registry</text>
+<text x="1140.0" y="193" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">churn-model:1</text>
+<text x="1140.0" y="208" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">linked to its job</text>
+<text x="1140.0" y="223" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">(lineage)</text>
+<path d="M840,230 L866,230" fill="none" stroke="#3A3F45" stroke-width="1.6" marker-end="url(#a)"/>
+<path d="M1035,230 L1061,230" fill="none" stroke="#3A3F45" stroke-width="1.6" marker-end="url(#a)"/>
+<rect x="675" y="475" width="230" height="130" rx="8" fill="#E6F4FC" stroke="#0078D4" stroke-width="1.5"/>
+<text x="790.0" y="495" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1F2328" text-anchor="middle">Container Registry</text>
+<text x="790.0" y="513" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">acrchurnub4786 (Basic)</text>
+<text x="790.0" y="528" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">churn-api:&lt;commit id&gt;</text>
+<text x="790.0" y="543" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">no admin user</text>
+<rect x="965" y="475" width="250" height="130" rx="8" fill="#E6F4FC" stroke="#0078D4" stroke-width="1.5"/>
+<text x="1090.0" y="495" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1F2328" text-anchor="middle">Container App</text>
+<text x="1090.0" y="513" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">ca-churn-api · FastAPI</text>
+<text x="1090.0" y="528" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">/health · /predict</text>
+<text x="1090.0" y="543" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">HTTPS, 0–1 replica</text>
+<text x="1090.0" y="558" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">scale to zero when idle</text>
+<rect x="675" y="650" width="125" height="95" rx="8" fill="#E6F4FC" stroke="#0078D4" stroke-width="1.5"/>
+<text x="737.5" y="670" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1F2328" text-anchor="middle">Storage</text>
+<text x="737.5" y="688" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">stchurnub4786</text>
+<text x="737.5" y="703" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">data · code ·</text>
+<text x="737.5" y="718" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">model files</text>
+<rect x="813" y="650" width="125" height="95" rx="8" fill="#E6F4FC" stroke="#0078D4" stroke-width="1.5"/>
+<text x="875.5" y="670" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1F2328" text-anchor="middle">Managed identity</text>
+<text x="875.5" y="688" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">id-churn-api</text>
+<text x="875.5" y="703" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">AcrPull ·</text>
+<text x="875.5" y="718" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">Secrets User</text>
+<rect x="951" y="650" width="125" height="95" rx="8" fill="#E6F4FC" stroke="#0078D4" stroke-width="1.5"/>
+<text x="1013.5" y="670" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1F2328" text-anchor="middle">Key Vault</text>
+<text x="1013.5" y="688" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">kv-churn-ub4786</text>
+<text x="1013.5" y="703" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">App Insights</text>
+<text x="1013.5" y="718" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">connection string</text>
+<rect x="1089" y="650" width="140" height="95" rx="8" fill="#E6F4FC" stroke="#0078D4" stroke-width="1.5"/>
+<text x="1159.0" y="670" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1F2328" text-anchor="middle">Monitoring</text>
+<text x="1159.0" y="688" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">App Insights +</text>
+<text x="1159.0" y="703" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">Log Analytics</text>
+<text x="1159.0" y="718" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">(Phase 6)</text>
+<rect x="1295" y="440" width="170" height="115" rx="8" fill="#EAF7EE" stroke="#2E8B57" stroke-width="1.5"/>
+<text x="1380.0" y="460" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#1F2328" text-anchor="middle">Browser or curl</text>
+<text x="1380.0" y="478" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">POST /predict</text>
+<text x="1380.0" y="493" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">→ churn_probability</text>
+<text x="1380.0" y="508" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#57606A" text-anchor="middle">0.728, churn true</text>
+<path d="M280,157 L346,147" fill="none" stroke="#3A3F45" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="313" y="140" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">①  git push</text>
+<path d="M40,245 L25,245 L25,40 L1180,40 L1180,76" fill="none" stroke="#3A3F45" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="620" y="34" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">②  az deployment group create (infra/main.bicep) → creates every resource + role</text>
+<path d="M40,325 L30,325 L30,60 L1000,60 L1000,116" fill="none" stroke="#3A3F45" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="620" y="54" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">③  az ml data / compute / job / model create</text>
+<path d="M590,222 L656,222" fill="none" stroke="#3A3F45" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="623" y="214" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">④  submit</text>
+<path d="M470,565 L470,651" fill="none" stroke="#3A3F45" stroke-width="1.6" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="480" y="606" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1F2328" text-anchor="start" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">⑤  OIDC token ⇄ Azure token</text>
+<path d="M1140,305 L1140,380 L622,380 L622,490 L594,490" fill="none" stroke="#3A3F45" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="880" y="374" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">⑥  az ml model download → model.pkl</text>
+<path d="M590,520 L671,520" fill="none" stroke="#3A3F45" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="630" y="512" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">⑦  docker push</text>
+<path d="M590,548 L625,548 L625,628 L940,628 L940,585 L961,585" fill="none" stroke="#3A3F45" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="785" y="622" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">⑧  az containerapp update --image &lt;tag&gt;</text>
+<path d="M905,535 L961,535" fill="none" stroke="#3A3F45" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="933" y="527" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">⑨  pull</text>
+<path d="M875,650 L875,638 L990,638 L990,609" fill="none" stroke="#3A3F45" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="1000" y="640" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#57606A" text-anchor="start" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">identity</text>
+<path d="M1040,650 L1040,609" fill="none" stroke="#3A3F45" stroke-width="1.6" marker-end="url(#a)"/>
+<text x="1046" y="634" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="normal" fill="#1F2328" text-anchor="start" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">secret</text>
+<path d="M1150,605 L1150,646" fill="none" stroke="#3A3F45" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#a)"/>
+<path d="M1291,500 L1219,500" fill="none" stroke="#3A3F45" stroke-width="1.6" marker-start="url(#a)" marker-end="url(#a)"/>
+<text x="1255" y="492" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="bold" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">⑩  HTTPS</text>
+<text x="20" y="820" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#57606A" text-anchor="start">① push code  ② create Azure resources with Bicep  ③ upload data and train in Azure ML  ④ or train from a GitHub button  ⑤ GitHub logs in without a password  ⑥ get the registered model  ⑦ push the image  ⑧ deploy a new revision  ⑨ app pulls the image with its identity  ⑩ users call the API</text>
+<text x="20" y="22" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="18" font-weight="bold" fill="#1F2328" text-anchor="start">Azure Churn MLOps — architecture</text>
+</svg>

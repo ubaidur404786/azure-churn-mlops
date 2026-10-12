@@ -201,3 +201,5 @@ One entry per step: date, what we did, key commands, errors and fixes.
 - `.github/workflows/train.yml` (workflow_dispatch): OIDC login → `az ml job create --file aml/train-job.yml`. CI #4 and Deploy #3 green after the push; `azure/login@v3` removed the Node.js 20 warning.
 - `gh workflow run train.yml` → job `bubbly_camera_5dd7jr740n` Completed in Azure ML (created by Service Principal, accuracy 0.796), but the workflow was red: `az ml job stream` → `binascii.Error: Incorrect padding` with the OIDC token.
 - Fix: poll `az ml job show --query status` every 30 s instead of streaming.
+- After the fix: run 38234081192 green, job `frank_fowl_hl4mg2hqg3` Starting → Queued → Running → Completed (6 min 27 s).
+- Added README.md (architecture SVG, step list, real results), docs/architecture/ (overview + one step-by-step SVG per phase, with a command/tool/sends/gets table in each tutorial page) and GUIDE.md (every step by code and by hand in the portal, side by side; README kept generic).

@@ -6,6 +6,31 @@ Bicep is "infrastructure as code": instead of clicking in the portal, you descri
 
 ---
 
+## Architecture of this phase
+
+![phase_02 step by step](../architecture/phase_02.svg)
+
+Read it from top to bottom. Each box at the top is a tool or a service; the dashed line under it is its timeline. Each blue number is one arrow = one call over the network (or inside the laptop). Solid arrow = a request; dashed arrow = the answer that comes back. The table below has one row per number: what you type, which tool is called, what is sent and what comes back.
+
+| # | Command (you type) | Tool called | Sends | Gets back |
+|---|---|---|---|---|
+| | **2.1  Check the file (on the laptop, free)** | | | |
+| 1 | `az bicep lint --file infra/main.bicep` | Bicep linter | infra/main.bicep | nothing = no errors |
+| | **2.2  Resource group (free)** | | | |
+| 2 | `az group create --name $RG --location $LOCATION --tags $TAGS` | az CLI → Resource Manager (HTTPS) | name, region, tags | provisioningState Succeeded |
+| | **2.3  Preview with what-if (free)** | | | |
+| 3 | `$USER_ID = az ad signed-in-user show --query id -o tsv` | az CLI → Microsoft Graph | — | your object id (not a secret) |
+| 4 | `az deployment group what-if --resource-group $RG --template-file infra/main.bicep --parameters userObjectId=$USER_ID` | Bicep → Resource Manager | compiled template + parameter | Resource changes: 11 to create |
+| | **2.4  Deploy (credit starts to be used)** | | | |
+| 5 | `az deployment group create --resource-group $RG --template-file infra/main.bicep --parameters userObjectId=$USER_ID` | Bicep → Resource Manager | compiled template + parameter | deployment main Succeeded |
+| 6 | ↳ same command | Resource Manager → each resource provider | each resource's settings + tags | 8 resources + 3 role assignments |
+| 7 | — (automatic) | Application Insights | — | 1 extra free item + 1 failed alert deployment (harmless) |
+| 8 | ↳ same command | Resource Manager | — | long JSON ending in Succeeded |
+| | **2.5  Look at what exists** | | | |
+| 9 | `az resource list --resource-group $RG --query "[].{name:name, type:type, feature:tags.feature}" -o table` | az CLI → Resource Manager | a query | names, types and feature tags |
+
+---
+
 ## 2.1 Write the Bicep file and check it
 
 The file describes 8 resources and 3 role assignments. Every resource gets 4 tags: `project`, `owner`, `env` and one `feature` tag. The `feature` tag lets Cost Management show the cost per feature later.

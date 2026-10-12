@@ -2,15 +2,32 @@
 
 Goal: run the same Docker image from Phase 1 on Azure, with a public HTTPS address, no passwords anywhere, and zero cost when nobody uses it.
 
-How the pieces connect:
+---
 
-```
-laptop --docker push--> Container Registry (acrchurnub4786)
-                               |
-                   AcrPull (managed identity id-churn-api)
-                               v
-Key Vault --Secrets User--> Container App (ca-churn-api) --HTTPS--> browser
-```
+## Architecture of this phase
+
+![phase_03 step by step](../architecture/phase_03.svg)
+
+Read it from top to bottom. Each box at the top is a tool or a service; the dashed line under it is its timeline. Each blue number is one arrow = one call over the network (or inside the laptop). Solid arrow = a request; dashed arrow = the answer that comes back. The table below has one row per number: what you type, which tool is called, what is sent and what comes back.
+
+| # | Command (you type) | Tool called | Sends | Gets back |
+|---|---|---|---|---|
+| | **3.1  Build the image and push it to the private registry** | | | |
+| 1 | `az acr login --name $ACR` | az CLI → ACR | your Azure login token (no password) | Docker is logged in to the registry |
+| 2 | `docker build -t "${IMAGE}:v1" .` | Docker | Dockerfile + src/ + model/ | image acrchurnub4786.azurecr.io/churn-api:v1 |
+| 3 | `docker push "${IMAGE}:v1"` | Docker → ACR (HTTPS) | image layers | digest sha256:81cc… |
+| | **3.2  Store the App Insights connection string in Key Vault** | | | |
+| 4 | `$APPI_CS = az resource show … --query properties.ConnectionString -o tsv` | az CLI → Resource Manager | resource name | the connection string, kept in $APPI_CS (not printed) |
+| 5 | `az keyvault secret set --vault-name $KV --name appinsights-connection-string --value $APPI_CS --query name -o tsv` | az CLI → Key Vault (allowed by Secrets Officer role) | secret name + value | only the name is printed |
+| | **3.3  Deploy the Container App (same Bicep file)** | | | |
+| 6 | `az deployment group create … --query properties.outputs.apiUrl.value -o tsv` | Bicep → Resource Manager | template with the new Container App | only new things are created |
+| 7 | ↳ same command | Resource Manager → Container Apps | app settings | app ca-churn-api |
+| 8 | — (automatic) | Container Apps → ACR | identity token | the image |
+| 9 | — (automatic) | Container Apps → Key Vault | identity token | env variable APPLICATIONINSIGHTS_CONNECTION_STRING |
+| 10 | ↳ same command | Resource Manager | — | the public address |
+| | **3.4–3.5  Use it and measure it** | | | |
+| 11 | — (in /docs) | browser → Container App ingress → port 8000 | customer JSON | 0.728, churn true |
+| 12 | `python scripts/test_live_api.py` | Python urllib → HTTPS | 21 POST /predict | cold start ~26 s, warm ~0.2 s → docs/results/api_speed.md |
 
 ---
 

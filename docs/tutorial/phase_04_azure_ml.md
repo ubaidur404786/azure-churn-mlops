@@ -2,14 +2,35 @@
 
 Goal: run the same [src/train.py](../../src/train.py) in the cloud, on a small compute cluster that costs nothing when idle, log the metrics with MLflow in the workspace, and register the model.
 
-How the pieces connect:
+---
 
-```
-data/churn.csv --upload--> data asset churn-data:1 (Blob Storage)
-                                   |
-                                   v
-aml/train-job.yml --> command job on cpu-cluster (0 to 1 node) --> MLflow metrics + model --> model registry (churn-model)
-```
+## Architecture of this phase
+
+![phase_04 step by step](../architecture/phase_04.svg)
+
+Read it from top to bottom. Each box at the top is a tool or a service; the dashed line under it is its timeline. Each blue number is one arrow = one call over the network (or inside the laptop). Solid arrow = a request; dashed arrow = the answer that comes back. The table below has one row per number: what you type, which tool is called, what is sent and what comes back.
+
+| # | Command (you type) | Tool called | Sends | Gets back |
+|---|---|---|---|---|
+| | **4.1  Data asset** | | | |
+| 1 | `az ml data create --name churn-data --version 1 --type uri_file --path data/churn.csv …` | az ml → Storage (workspaceblobstore) | data/churn.csv | file stored under `LocalUpload/<hash>/` |
+| 2 | ↳ same command | az ml → workspace | name, version, path | data asset churn-data:1 |
+| | **4.2  Compute cluster** | | | |
+| 3 | `az ml compute create --file aml/cluster.yml …` | az ml → workspace | aml/cluster.yml | cpu-cluster, min 0 / max 1, 0 nodes now |
+| | **4.3  Training job** | | | |
+| 4 | `$JOB = az ml job create --file aml/train-job.yml … --query name -o tsv` | az ml → Storage | the src folder only | code snapshot |
+| 5 | ↳ same command | az ml → workspace | job definition (code, input, env, compute) | job name, e.g. joyful_grass_9w8dwr40k9 |
+| 6 | — (automatic) | workspace → cluster | — | a virtual machine |
+| 7 | — (automatic) | node → Microsoft registry | — | Python 3.10 + scikit-learn 1.5.2 |
+| 8 | — (automatic) | node ← Storage | — | input data and code on the node |
+| 9 | — (automatic) | Python on the node | — | trained model |
+| 10 | — (automatic) | MLflow → workspace | params + metrics | visible in Azure ML studio |
+| 11 | — (automatic) | node → Storage | model.pkl | job output folder |
+| 12 | — (automatic) | workspace → cluster | — | no machine, no cost |
+| 13 | `az ml job stream --name $JOB …` | az ml → workspace | job name | live log ending in Status: Completed |
+| | **4.4–4.5  Register the model and check the cluster** | | | |
+| 14 | `az ml model create --name churn-model --version 1 --type custom_model --path "azureml://jobs/$JOB/outputs/model" …` | az ml → workspace | pointer to the job output | model churn-model:1 with job_name (lineage) |
+| 15 | `az ml compute list-nodes --name $AML_CLUSTER …` | az ml → workspace | cluster name | [] = 0 nodes = €0 per hour |
 
 ---
 

@@ -4,6 +4,29 @@ Goal: make sure the card can never be charged, set up a budget alert, estimate t
 
 ---
 
+## Architecture of this phase
+
+![phase_00 step by step](../architecture/phase_00.svg)
+
+Read it from top to bottom. Each box at the top is a tool or a service; the dashed line under it is its timeline. Each blue number is one arrow = one call over the network (or inside the laptop). Solid arrow = a request; dashed arrow = the answer that comes back. The table below has one row per number: what you type, which tool is called, what is sent and what comes back.
+
+| # | Command (you type) | Tool called | Sends | Gets back |
+|---|---|---|---|---|
+| | **0.1–0.2  Check the credit and set a budget (portal, free)** | | | |
+| 1 | Portal → Subscriptions; Cost Management → Budgets | browser | budget amount, alert levels 5/50/80/100 % | budget saved, alerts by email |
+| | **0.4  Install the tools** | | | |
+| 2 | `winget install -e --id Microsoft.AzureCLI` | winget (Windows package manager) | package id | Azure CLI 2.91 installed (open a new terminal) |
+| | **0.5  Log in (passwords only in the browser, never in the terminal)** | | | |
+| 3 | `az login` | az CLI → browser sign-in → Entra ID | your sign-in (typed in the browser) | access token saved in ~/.azure; subscription Enabled |
+| 4 | `gh auth login` | gh CLI → browser → GitHub | one-time code | token in the Windows keyring (scopes repo, workflow) |
+| | **0.6  CLI extensions and resource providers** | | | |
+| 5 | `az extension add -n ml --upgrade` | az CLI | extension names | new az ml / az containerapp / az bicep commands |
+| 6 | `az provider register -n <namespace>` | az CLI → Resource Manager | 7 service names (App, KeyVault, ML…) | Registering → Registered (free) |
+| | **0.7–0.8  Git repository** | | | |
+| 7 | `gh repo create azure-churn-mlops --public --source . --remote origin --push` | gh + git → GitHub over HTTPS | the committed files | public repo created; PLAN.md later removed with git rm --cached |
+
+---
+
 ## 0.1 Check the subscription (portal)
 
 Portal → Subscriptions → "Azure subscription 1".

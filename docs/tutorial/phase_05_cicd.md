@@ -2,13 +2,34 @@
 
 Goal: every push is tested automatically (CI), and every push to `main` is deployed to Azure automatically (CD). GitHub logs in to Azure with **OIDC**: no password or secret is stored in GitHub.
 
-How OIDC login works:
+---
 
-```
-GitHub Actions run --"I am repo X, branch main" (signed token, lives minutes)--> Entra ID
-Entra ID checks the federated credential (trust rule) --> OK --> short Azure access token
-Azure access token --> only what the role allows (Contributor on rg-churn-mlops)
-```
+## Architecture of this phase
+
+![phase_05 step by step](../architecture/phase_05.svg)
+
+Read it from top to bottom. Each box at the top is a tool or a service; the dashed line under it is its timeline. Each blue number is one arrow = one call over the network (or inside the laptop). Solid arrow = a request; dashed arrow = the answer that comes back. The table below has one row per number: what you type, which tool is called, what is sent and what comes back.
+
+| # | Command (you type) | Tool called | Sends | Gets back |
+|---|---|---|---|---|
+| | **5.1–5.3  An identity for GitHub, with no password (one time)** | | | |
+| 1 | `az ad app create / az ad sp create / az ad app federated-credential create …` | az CLI → Microsoft Graph | app name + infra/github-federated-credential.json | app with 0 secrets, 1 trust rule |
+| 2 | `az role assignment create --assignee-object-id $SP_ID --role Contributor --scope $RG_ID …` | az CLI → Azure RBAC | identity + role + scope | role on the resource group only |
+| 3 | `gh variable set AZURE_CLIENT_ID --body $APP_ID --repo $GH_REPO` | gh → GitHub | client, tenant and subscription ids | 3 repository variables |
+| | **5.4  CI on every push** | | | |
+| 4 | `git push` | git → GitHub (HTTPS) | new commits | CI starts |
+| 5 | — (automatic, ci.yml) | GitHub runner (Ubuntu) | the repo files | green ✓ in about 1 min |
+| | **5.5  CD after a green CI (deploy.yml)** | | | |
+| 6 | — (automatic, azure/login) | GitHub → Entra ID | signed token: repo:ubaidur404786@…/azure-churn-mlops@…:ref:refs/heads/main | Azure access token valid for minutes |
+| 7 | — (automatic) | runner ← Azure ML registry | model name + version | model/model.pkl on the runner |
+| 8 | — (automatic) | Docker on the runner | Dockerfile + model.pkl | image tagged with the commit id, health ok |
+| 9 | — (automatic) | runner → ACR | image layers | image in the registry |
+| 10 | — (automatic) | runner → Container Apps | new image tag | new revision ca-churn-api--0000001 |
+| 11 | — (automatic) | Container Apps → ACR | identity token | new image |
+| 12 | — (automatic) | runner → live API | GET /health | {"status":"ok"} |
+| | **5.6  Manual training button (train.yml)** | | | |
+| 13 | `gh workflow run train.yml --repo $GH_REPO` | gh → GitHub | workflow name | a new run |
+| 14 | — (automatic) | runner → Azure ML | aml/train-job.yml + src/ | job on cpu-cluster; status checked every 30 s |
 
 ---
 
@@ -428,3 +449,52 @@ Cause: only the `az ml job stream` command failed. It tries to read the login to
 Lesson: when a pipeline step fails, check whether the real work failed or only the step that watches it.
 
 Fix: instead of streaming the log, the workflow asks for the job status every 30 seconds (`az ml job show --query status`) and stops on `Completed` (success) or `Failed` / `Canceled` (red).
+
+After pushing the fix, run the button again:
+
+```powershell
+gh workflow run train.yml --repo $GH_REPO
+```
+
+```
+✓ Created workflow_dispatch event for train.yml at main
+https://github.com/ubaidur404786/azure-churn-mlops/actions/runs/38234081192
+```
+
+The "Wait for the job" step now prints:
+
+```
+Job frank_fowl_hl4mg2hqg3: Starting
+Job frank_fowl_hl4mg2hqg3: Queued
+...
+Job frank_fowl_hl4mg2hqg3: Running
+...
+Job frank_fowl_hl4mg2hqg3: Completed
+```
+
+```
+✓ main Train in Azure ML · 38234081192
+✓ train in 6m27s
+```
+
+Meaning: `Queued` = the cluster is starting a node (0 → 1), `Running` = `train.py` runs, `Completed` = the model and metrics are saved. The workflow is green.
+
+---
+
+## Cost at the end of Phase 5
+
+The portal showed **€175.96** left: the first €0.03 of real cost has arrived (cost data comes 8–48 hours late). GitHub Actions is free for a public repo. Each training run costs about €0.01; the registry about €0.16 a day.
+
+## Commit Phase 5
+
+```powershell
+git add .
+```
+
+```powershell
+git commit -m "Phase 5: CI/CD with GitHub Actions and OIDC, README and diagrams"
+```
+
+```powershell
+git push
+```

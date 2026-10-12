@@ -2,11 +2,36 @@
 
 Goal: train a small churn model, serve it with a web API, test it, and package it in a Docker image. Everything runs on the laptop, so it costs nothing. The same files go to Azure later.
 
-How the pieces connect:
+---
 
-```
-data/churn.csv --> src/train.py --> model/model.pkl --> src/app.py (FastAPI) --> Docker image
-```
+## Architecture of this phase
+
+![phase_01 step by step](../architecture/phase_01.svg)
+
+Read it from top to bottom. Each box at the top is a tool or a service; the dashed line under it is its timeline. Each blue number is one arrow = one call over the network (or inside the laptop). Solid arrow = a request; dashed arrow = the answer that comes back. The table below has one row per number: what you type, which tool is called, what is sent and what comes back.
+
+| # | Command (you type) | Tool called | Sends | Gets back |
+|---|---|---|---|---|
+| | **1.1  Virtual environment and dataset** | | | |
+| 1 | `python -m venv .venv` | Python | — | .venv folder; prompt shows (.venv) |
+| 2 | `pip install -r requirements.txt` | pip → PyPI (HTTPS) | requirements.txt (package list) | pandas, scikit-learn, MLflow, FastAPI, pytest… in .venv |
+| 3 | `Invoke-WebRequest -Uri <IBM CSV> -OutFile data/churn.csv` | PowerShell → raw.githubusercontent.com | the URL | data/churn.csv on disk |
+| | **1.2  Train the model** | | | |
+| 4 | `python src/train.py` | Python | — | starts training |
+| 5 | ↳ same command | pandas | data/churn.csv | a table of 7,043 customers |
+| 6 | ↳ same command | joblib + MLflow | trained pipeline + metrics | model/model.pkl, local MLflow run |
+| 7 | ↳ same command | print | — | metrics on screen |
+| | **1.3–1.4  Web API and tests** | | | |
+| 8 | `uvicorn src.app:app --reload` | uvicorn (web server) | — | API on http://localhost:8000 |
+| 9 | ↳ same command | joblib | model/model.pkl | model in memory |
+| 10 | — (click Try it out in /docs) | browser → FastAPI | 8 customer fields as JSON | churn_probability 0.728, churn true |
+| 11 | `pytest` | pytest + FastAPI TestClient | tests/test_app.py | 3 passed |
+| | **1.5  Docker image** | | | |
+| 12 | `docker build -t churn-api:local .` | Docker | Dockerfile + build context | image churn-api:local |
+| 13 | ↳ same command | Docker Hub + PyPI | image and package names | base image + pinned packages (requirements-api.txt) |
+| 14 | ↳ same command | Docker build context | files not in .dockerignore | copied into the image |
+| 15 | `docker run --rm -p 8000:8000 churn-api:local` | Docker | port mapping 8000 → 8000 | container running the API |
+| 16 | — (in /docs) | browser → container | customer JSON | 0.728, churn true (same as uvicorn) |
 
 ---
 

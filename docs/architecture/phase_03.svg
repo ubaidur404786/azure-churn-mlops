@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1378" height="1126" viewBox="0 0 1378 1126">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3A3F45"/></marker></defs>
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<text x="24" y="32" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="17" font-weight="bold" fill="#1F2328" text-anchor="start">Phase 3 — live API on Azure Container Apps, step by step</text>
+<rect x="32" y="62" width="174" height="58" rx="8" fill="#EEF4FF" stroke="#3B6FD8" stroke-width="1.5"/>
+<text x="119" y="86" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#3B6FD8" text-anchor="middle">PowerShell</text>
+<text x="119" y="104" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#57606A" text-anchor="middle">az · docker</text>
+<line x1="119" y1="120" x2="119" y2="1110" stroke="#3B6FD8" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.6"/>
+<rect x="222" y="62" width="174" height="58" rx="8" fill="#E9F7FB" stroke="#1D8FB5" stroke-width="1.5"/>
+<text x="309" y="86" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#1D8FB5" text-anchor="middle">Docker</text>
+<text x="309" y="104" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#57606A" text-anchor="middle">on the laptop</text>
+<line x1="309" y1="120" x2="309" y2="1110" stroke="#1D8FB5" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.6"/>
+<rect x="412" y="62" width="174" height="58" rx="8" fill="#E6F4FC" stroke="#0078D4" stroke-width="1.5"/>
+<text x="499" y="86" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#0078D4" text-anchor="middle">Container Registry</text>
+<text x="499" y="104" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#57606A" text-anchor="middle">acrchurnub4786</text>
+<line x1="499" y1="120" x2="499" y2="1110" stroke="#0078D4" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.6"/>
+<rect x="602" y="62" width="174" height="58" rx="8" fill="#E6F4FC" stroke="#0078D4" stroke-width="1.5"/>
+<text x="689" y="86" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#0078D4" text-anchor="middle">Key Vault</text>
+<text x="689" y="104" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#57606A" text-anchor="middle">kv-churn-ub4786</text>
+<line x1="689" y1="120" x2="689" y2="1110" stroke="#0078D4" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.6"/>
+<rect x="792" y="62" width="174" height="58" rx="8" fill="#E6F4FC" stroke="#0078D4" stroke-width="1.5"/>
+<text x="879" y="86" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#0078D4" text-anchor="middle">Resource Manager</text>
+<text x="879" y="104" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#57606A" text-anchor="middle">ARM</text>
+<line x1="879" y1="120" x2="879" y2="1110" stroke="#0078D4" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.6"/>
+<rect x="982" y="62" width="174" height="58" rx="8" fill="#E6F4FC" stroke="#0078D4" stroke-width="1.5"/>
+<text x="1069" y="86" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#0078D4" text-anchor="middle">Container App</text>
+<text x="1069" y="104" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#57606A" text-anchor="middle">ca-churn-api + identity</text>
+<line x1="1069" y1="120" x2="1069" y2="1110" stroke="#0078D4" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.6"/>
+<rect x="1172" y="62" width="174" height="58" rx="8" fill="#EAF7EE" stroke="#2E8B57" stroke-width="1.5"/>
+<text x="1259" y="86" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" font-weight="bold" fill="#2E8B57" text-anchor="middle">Browser</text>
+<text x="1259" y="104" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="normal" fill="#57606A" text-anchor="middle">anyone</text>
+<line x1="1259" y1="120" x2="1259" y2="1110" stroke="#2E8B57" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.6"/>
+<rect x="16" y="144" width="1346" height="24" rx="4" fill="#F6F8FA" stroke="#D0D7DE"/>
+<text x="24" y="161" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#24292F" text-anchor="start">3.1  Build the image and push it to the private registry</text>
+<line x1="119" y1="202" x2="495" y2="202" stroke="#3A3F45" stroke-width="1.5" marker-end="url(#a)"/>
+<text x="309" y="190" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">az acr login (Entra token)</text>
+<circle cx="133" cy="202" r="9" fill="#0969DA"/>
+<text x="133" y="206" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
+<line x1="499" y1="232" x2="123" y2="232" stroke="#3A3F45" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#a)"/>
+<text x="309" y="220" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">Login Succeeded</text>
+<line x1="119" y1="280" x2="305" y2="280" stroke="#3A3F45" stroke-width="1.5" marker-end="url(#a)"/>
+<text x="214" y="268" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">docker build -t …/churn-api:v1 .</text>
+<circle cx="133" cy="280" r="9" fill="#0969DA"/>
+<text x="133" y="284" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
+<line x1="309" y1="328" x2="495" y2="328" stroke="#3A3F45" stroke-width="1.5" marker-end="url(#a)"/>
+<text x="404" y="316" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">docker push (11 layers)</text>
+<circle cx="323" cy="328" r="9" fill="#0969DA"/>
+<text x="323" y="332" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
+<line x1="499" y1="358" x2="313" y2="358" stroke="#3A3F45" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#a)"/>
+<text x="404" y="346" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">digest sha256:81cc…</text>
+<rect x="16" y="382" width="1346" height="24" rx="4" fill="#F6F8FA" stroke="#D0D7DE"/>
+<text x="24" y="399" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#24292F" text-anchor="start">3.2  Store the App Insights connection string in Key Vault</text>
+<line x1="119" y1="440" x2="875" y2="440" stroke="#3A3F45" stroke-width="1.5" marker-end="url(#a)"/>
+<text x="499" y="428" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">az resource show … ConnectionString</text>
+<circle cx="133" cy="440" r="9" fill="#0969DA"/>
+<text x="133" y="444" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#FFFFFF" text-anchor="middle">4</text>
+<line x1="879" y1="470" x2="123" y2="470" stroke="#3A3F45" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#a)"/>
+<text x="499" y="458" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">kept in $APPI_CS</text>
+<line x1="119" y1="518" x2="685" y2="518" stroke="#3A3F45" stroke-width="1.5" marker-end="url(#a)"/>
+<text x="404" y="506" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">az keyvault secret set</text>
+<circle cx="133" cy="518" r="9" fill="#0969DA"/>
+<text x="133" y="522" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#FFFFFF" text-anchor="middle">5</text>
+<line x1="689" y1="548" x2="123" y2="548" stroke="#3A3F45" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#a)"/>
+<text x="404" y="536" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">appinsights-connection-string</text>
+<rect x="16" y="572" width="1346" height="24" rx="4" fill="#F6F8FA" stroke="#D0D7DE"/>
+<text x="24" y="589" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#24292F" text-anchor="start">3.3  Deploy the Container App (same Bicep file)</text>
+<line x1="119" y1="630" x2="875" y2="630" stroke="#3A3F45" stroke-width="1.5" marker-end="url(#a)"/>
+<text x="499" y="618" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">az deployment group create</text>
+<circle cx="133" cy="630" r="9" fill="#0969DA"/>
+<text x="133" y="634" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#FFFFFF" text-anchor="middle">6</text>
+<line x1="879" y1="692" x2="1065" y2="692" stroke="#3A3F45" stroke-width="1.5" marker-end="url(#a)"/>
+<text x="974" y="666" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">create app: image v1, min 0 / max 1,</text>
+<text x="974" y="680" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">identity, secret reference</text>
+<circle cx="893" cy="692" r="9" fill="#0969DA"/>
+<text x="893" y="696" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#FFFFFF" text-anchor="middle">7</text>
+<line x1="1069" y1="754" x2="503" y2="754" stroke="#3A3F45" stroke-width="1.5" marker-end="url(#a)"/>
+<text x="784" y="728" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">pull churn-api:v1</text>
+<text x="784" y="742" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">(managed identity, AcrPull)</text>
+<circle cx="1055" cy="754" r="9" fill="#0969DA"/>
+<text x="1055" y="758" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#FFFFFF" text-anchor="middle">8</text>
+<line x1="1069" y1="816" x2="693" y2="816" stroke="#3A3F45" stroke-width="1.5" marker-end="url(#a)"/>
+<text x="879" y="790" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">read secret</text>
+<text x="879" y="804" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">(identity, Secrets User)</text>
+<circle cx="1055" cy="816" r="9" fill="#0969DA"/>
+<text x="1055" y="820" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#FFFFFF" text-anchor="middle">9</text>
+<line x1="879" y1="864" x2="123" y2="864" stroke="#3A3F45" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#a)"/>
+<text x="499" y="852" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">apiUrl https://ca-churn-api…</text>
+<circle cx="865" cy="864" r="9" fill="#0969DA"/>
+<text x="865" y="868" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#FFFFFF" text-anchor="middle">10</text>
+<rect x="16" y="888" width="1346" height="24" rx="4" fill="#F6F8FA" stroke="#D0D7DE"/>
+<text x="24" y="905" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#24292F" text-anchor="start">3.4–3.5  Use it and measure it</text>
+<line x1="1259" y1="946" x2="1073" y2="946" stroke="#3A3F45" stroke-width="1.5" marker-end="url(#a)"/>
+<text x="1164" y="934" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">HTTPS POST /predict</text>
+<circle cx="1245" cy="946" r="9" fill="#0969DA"/>
+<text x="1245" y="950" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#FFFFFF" text-anchor="middle">11</text>
+<line x1="1069" y1="976" x2="1255" y2="976" stroke="#3A3F45" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#a)"/>
+<text x="1164" y="964" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">0.728, churn true</text>
+<line x1="119" y1="1038" x2="1065" y2="1038" stroke="#3A3F45" stroke-width="1.5" marker-end="url(#a)"/>
+<text x="594" y="1012" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">python scripts/test_live_api.py</text>
+<text x="594" y="1026" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">1 + 20 requests</text>
+<circle cx="133" cy="1038" r="9" fill="#0969DA"/>
+<text x="133" y="1042" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10" font-weight="bold" fill="#FFFFFF" text-anchor="middle">12</text>
+<line x1="1069" y1="1068" x2="123" y2="1068" stroke="#3A3F45" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#a)"/>
+<text x="594" y="1056" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#1F2328" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" stroke-linejoin="round">cold start ~26 s · warm ~0.2 s</text>
+</svg>
