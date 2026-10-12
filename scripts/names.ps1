@@ -18,6 +18,9 @@ $AML_CLUSTER = "cpu-cluster"
 # registry: container registry (lowercase letters and numbers only)
 $ACR = "acrchurn$SUFFIX"
 
+# registry: full image name inside the registry (add a tag like :v1 when using it)
+$IMAGE = "$ACR.azurecr.io/churn-api"
+
 # serving: Container Apps environment and app
 $CAE = "cae-churn-mlops"
 $CA = "ca-churn-api"

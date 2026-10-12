@@ -10,6 +10,9 @@ param suffix string = 'ub4786'
 // Your own Entra ID object id, so you can write secrets into Key Vault
 param userObjectId string
 
+// Tag of the API image in the registry (CI later updates the app with the commit SHA)
+param imageTag string = 'v1'
+
 // Tags that every resource gets (each resource adds its own feature tag)
 var baseTags = {
   project: 'churn-mlops'
@@ -26,6 +29,8 @@ var acrName = 'acrchurn${suffix}'
 var amlName = 'mlw-churn-mlops'
 var caeName = 'cae-churn-mlops'
 var identityName = 'id-churn-api'
+var appName = 'ca-churn-api'
+var secretName = 'appinsights-connection-string'
 
 // Built-in role ids (the same in every Azure subscription)
 var acrPullRole = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
@@ -184,9 +189,89 @@ resource userKvWrite 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
+// secrets: the Application Insights connection string, stored in Key Vault
+resource appiSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+  parent: kv
+  name: secretName
+  properties: {
+    value: appi.properties.ConnectionString
+  }
+}
+
+// serving: the Container App that runs our API image
+resource app 'Microsoft.App/containerApps@2024-03-01' = {
+  name: appName
+  location: location
+  tags: union(baseTags, { feature: 'serving' })
+  // The app uses our managed identity (no passwords)
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${identity.id}': {}
+    }
+  }
+  properties: {
+    managedEnvironmentId: cae.id
+    configuration: {
+      activeRevisionsMode: 'Single'
+      // Public HTTPS address that forwards to port 8000 in the container
+      ingress: {
+        external: true
+        targetPort: 8000
+      }
+      // Pull the image from our registry with the managed identity
+      registries: [
+        {
+          server: acr.properties.loginServer
+          identity: identity.id
+        }
+      ]
+      // Read the secret from Key Vault with the managed identity
+      secrets: [
+        {
+          name: secretName
+          keyVaultUrl: '${kv.properties.vaultUri}secrets/${secretName}'
+          identity: identity.id
+        }
+      ]
+    }
+    template: {
+      containers: [
+        {
+          name: 'churn-api'
+          image: '${acr.properties.loginServer}/churn-api:${imageTag}'
+          resources: {
+            cpu: json('0.5')
+            memory: '1Gi'
+          }
+          // Give the secret to the app as an environment variable
+          env: [
+            {
+              name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+              secretRef: secretName
+            }
+          ]
+        }
+      ]
+      // Scale to zero when idle (no cost), at most 1 copy
+      scale: {
+        minReplicas: 0
+        maxReplicas: 1
+      }
+    }
+  }
+  // Wait until the identity has its roles and the secret exists
+  dependsOn: [
+    identityAcrPull
+    identityKvRead
+    appiSecret
+  ]
+}
+
 // Values printed after the deployment, used in the next phases
 output acrLoginServer string = acr.properties.loginServer
 output identityId string = identity.id
 output identityClientId string = identity.properties.clientId
 output environmentId string = cae.id
 output keyVaultUri string = kv.properties.vaultUri
+output apiUrl string = 'https://${app.properties.configuration.ingress.fqdn}'

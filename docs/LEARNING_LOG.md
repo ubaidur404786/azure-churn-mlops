@@ -103,3 +103,32 @@ One entry per step: date, what we did, key commands, errors and fixes.
 - The Deployments list also shows a failed `Failure-Anomalies-Alert-Rule-Deployment-...`, created 9 minutes after `main`. Azure starts it by itself to add a "smart detection" alert to Application Insights. It is not from our Bicep, it creates nothing and costs nothing. Our own deployment `main` succeeded. (Likely cause: the `Microsoft.AlertsManagement` provider is not registered. Not needed; Phase 6 adds our own alert.)
 - The resource group now shows 9 items: Azure also added an action group "Application Insights Smart Detection" (global, untagged) when App Insights was created. It is free and is deleted with the resource group in Phase 8.
 - Screenshots: `02_resource_group.png`, `02_bicep_deployment.png` (Deployments → main), `02_tags.png` (Portal → Tags: all 6 `feature` values plus the 3 base tags).
+
+## Phase 3 — Live API on Azure Container Apps
+
+### 2026-10-12 — 3.1 Image pushed to ACR
+- `$IMAGE` added to `scripts/names.ps1` (`acrchurnub4786.azurecr.io/churn-api`).
+- `az acr login --name $ACR` (uses the Azure login, no admin user), `docker build -t "${IMAGE}:v1" .`, `docker push "${IMAGE}:v1"`.
+- Built on the laptop, not with `az acr build`: free-trial subscriptions often block ACR Tasks.
+- First `show-tags` gave `repository "churn-api" is not found`. Cause: the build was done but the push was skipped. Fix: run `docker push`.
+- No Docker Hub upload is needed: the image name starts with the ACR address, so `docker push` goes straight to the private registry.
+
+### 2026-10-12 — 3.2 Secret in Key Vault
+- `$APPI_CS = az resource show ... --query properties.ConnectionString -o tsv`, then `az keyvault secret set --vault-name $KV --name appinsights-connection-string --value $APPI_CS --query name -o tsv`. The value is never printed.
+- It worked because Bicep gave the user the Key Vault Secrets Officer role.
+- The same secret is now also in `infra/main.bicep`, so a fresh redeploy creates it in one command.
+
+### 2026-10-12 — 3.3 Container App deployed
+- Added to `infra/main.bicep`: the Key Vault secret and the Container App `ca-churn-api` (HTTPS ingress to port 8000, min 0 / max 1 replicas, image pulled and secret read with the managed identity, 0.5 CPU / 1 GB).
+- `az deployment group create ... --query properties.outputs.apiUrl.value -o tsv` → `https://ca-churn-api.yellowcliff-1636b7fd.francecentral.azurecontainerapps.io`.
+- Screenshot `03_container_app.png` (subscription ID hidden).
+
+### 2026-10-12 — 3.4 Live test
+- `/docs` works over HTTPS. `/predict` with the test customer → 200, `churn_probability` 0.728, `churn` true: same as the laptop and local Docker.
+- Screenshots `03_live_docs.png`, `03_predict_response.png`.
+- New: `docs/tutorial/` keeps every command with its real output and screenshots, phase by phase, for later study.
+
+### 2026-10-12 — 3.5 Live API speed
+- `scripts/test_live_api.py` (built-in `urllib`, no extra package): 1 cold request, then 20 warm requests; writes `docs/results/api_speed.md`.
+- Result after about 10 minutes idle: cold start 25.91 s. Average of 20 requests 513 ms, but the first 2 were still warming up (4.5 s, 1.7 s). Requests 3–20 average 223 ms; median 238 ms.
+- Lesson: scale to zero = €0 when idle, paid for with a ~26 s first request.
