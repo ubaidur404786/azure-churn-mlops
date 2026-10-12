@@ -23,3 +23,4 @@ The script adds one row per run. A run where the first request takes under 5 s i
 | 2026-10-12 | 25.91 s | 513 ms | 118 ms | 4523 ms |
 | 2026-10-12 | 22.95 s | 357 ms | 212 ms | 673 ms |
 | 2026-10-13 | 27.98 s | 1562 ms | 386 ms | 2566 ms |
+| 2026-10-12 | 33.00 s | 570 ms | 237 ms | 1383 ms |

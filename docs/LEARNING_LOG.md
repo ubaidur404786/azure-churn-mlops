@@ -232,3 +232,11 @@ One entry per step: date, what we did, key commands, errors and fixes.
 - One growing architecture diagram per part, `docs/architecture/arch_00.svg` … `arch_06.svg`: new boxes in colour, earlier ones grey, numbered arrows with what each sends and gets back. Added to the guide and to every tutorial page.
 - Wording made neutral ("Developer laptop", "Command") so the docs read as project documentation, not instructions to one person.
 - Cost analysis at this point: about €0.04 for the resource group; the `feature` tag grouping is not in the cost data yet (8–48 h delay).
+
+### 2026-10-12 — Phase 7: proof pack
+- 7.1 All 20 screenshots of Phases 0–6 are in `docs/screenshots/`; none missing.
+- 7.2 Demo: `docs/results/demo.gif`, 10 real screenshots with one caption each (made with Pillow). No narrated video; `docs/results/video.md` says how to add one.
+- 7.3 `python scripts/export_aml_runs.py <mlflow_tracking_uri>` → `docs/results/aml_runs.csv`: 3 runs, all FINISHED, accuracy 0.7956, F1 0.5838, ROC-AUC 0.8375, about 3 min each. The uri comes from `az ml workspace show --query mlflow_tracking_uri -o tsv`.
+- One more live speed run (`scripts/test_live_api.py`): warm average 570 ms, fastest 237 ms.
+- 7.4 README: CI badge, demo, services table (service → why → file), results, screenshots, "deploy in 4 commands".
+- 7.5 Portal → Cost Management → Cost analysis → Resource groups → expand `rg-churn-mlops`: €0.12 in total (workspace €0.06, registry €0.06). Credit: $199.86 of $200. Screenshot `07_cost_before_shutdown.png` (the workspace tag that shows the subscription ID is greyed out).

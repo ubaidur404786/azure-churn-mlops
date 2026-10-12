@@ -26,5 +26,6 @@ Big picture first: [the architecture diagram](../architecture/architecture.svg) 
 | 4 — Train in Azure Machine Learning | [phase_04_azure_ml.md](phase_04_azure_ml.md) |
 | 5 — CI/CD with GitHub Actions + OIDC | [phase_05_cicd.md](phase_05_cicd.md) |
 | 6 — Monitoring with Application Insights | [phase_06_monitoring.md](phase_06_monitoring.md) |
+| 7 — Proof pack while everything is live | [phase_07_proof.md](phase_07_proof.md) |
 
 Want to rebuild it yourself? [GUIDE.md](../../GUIDE.md) has every step **by code and by hand in the Azure portal side by side**, including where to start if you only have a container image or only code on GitHub.
