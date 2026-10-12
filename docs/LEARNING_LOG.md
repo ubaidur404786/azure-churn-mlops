@@ -69,3 +69,37 @@ One entry per step: date, what we did, key commands, errors and fixes.
 
 ### 2026-10-12 — 1.6 Model metrics
 - `docs/results/model_metrics.md`: setup, test-set metrics, baseline (always "no churn" = 0.735 accuracy), and the example prediction.
+
+## Phase 2 — Azure resources with Bicep
+
+### 2026-10-12 — 2.1 Bicep file
+- `infra/main.bicep` describes every resource in one file. Each one has the tags `project`, `owner`, `env` and one `feature` tag.
+- Resources: Log Analytics (0.5 GB daily cap), Application Insights, Key Vault (RBAC mode, 7-day soft delete), Storage (Standard LRS, no public blobs), ACR Basic (no admin user), Azure ML workspace, Container Apps environment, user-assigned managed identity.
+- Roles: the identity gets AcrPull on the registry and Key Vault Secrets User on the vault. The user gets Key Vault Secrets Officer on the vault to write the secret in Phase 3.
+- The Azure ML workspace is not linked to our ACR. The curated sklearn environment needs no image build, so no extra registry is created.
+
+### 2026-10-12 — 2.2 Resource group
+- `az group create --name $RG --location $LOCATION --tags $TAGS` created `rg-churn-mlops` in francecentral with the 3 base tags. A resource group is free.
+
+### 2026-10-12 — 2.3 What-if preview
+- `$USER_ID = az ad signed-in-user show --query id -o tsv` gets your Entra ID object id (not a secret).
+- `az deployment group what-if --resource-group $RG --template-file infra/main.bicep --parameters userObjectId=$USER_ID` → `Resource changes: 11 to create`. Free, creates nothing.
+
+### 2026-10-12 — 2.4 Deployment
+- `az deployment group create --resource-group $RG --template-file infra/main.bicep --parameters userObjectId=$USER_ID` → `Succeeded`. All 11 resources created.
+- Cost starts now: mainly ACR Basic (about €0.16/day). The rest is free or a few cents while idle.
+- Screenshot `02_bicep_deployment.png`.
+
+### 2026-10-12 — 2.5 What each resource does
+- **log-churn-mlops (Log Analytics, monitoring):** one place that stores logs from all services, searched with KQL. Capped at 0.5 GB a day so it stays in the free 5 GB a month.
+- **appi-churn-mlops (Application Insights, monitoring):** tracks the API's requests, response times and errors. Its data lives inside the Log Analytics workspace.
+- **kv-churn-ub4786 (Key Vault, secrets):** a safe store for secrets, so none are in code or Git. RBAC mode: access is given with Azure roles, not access policies.
+- **id-churn-api (managed identity, secrets):** an Azure identity with no password. The Container App uses it to pull images (AcrPull) and read secrets (Key Vault Secrets User).
+- **stchurnub4786 (Storage, data):** holds the dataset and the files Azure ML writes. Standard LRS (3 copies in one datacenter), HTTPS only, no public blobs.
+- **acrchurnub4786 (Container Registry, registry):** a private Docker Hub for our API image. Basic plan, no admin user, pulled with the managed identity.
+- **mlw-churn-mlops (Azure ML workspace, training):** the home for training jobs, MLflow runs and the model registry. The workspace is free; only compute costs money.
+- **cae-churn-mlops (Container Apps environment, serving):** the shared space where the Container App will run, with its logs sent to Log Analytics. No cost until an app runs.
+- **3 role assignments:** the identity gets AcrPull on the registry and Key Vault Secrets User on the vault; the user gets Key Vault Secrets Officer on the vault.
+- The Deployments list also shows a failed `Failure-Anomalies-Alert-Rule-Deployment-...`, created 9 minutes after `main`. Azure starts it by itself to add a "smart detection" alert to Application Insights. It is not from our Bicep, it creates nothing and costs nothing. Our own deployment `main` succeeded. (Likely cause: the `Microsoft.AlertsManagement` provider is not registered. Not needed; Phase 6 adds our own alert.)
+- The resource group now shows 9 items: Azure also added an action group "Application Insights Smart Detection" (global, untagged) when App Insights was created. It is free and is deleted with the resource group in Phase 8.
+- Screenshots: `02_resource_group.png`, `02_bicep_deployment.png` (Deployments → main), `02_tags.png` (Portal → Tags: all 6 `feature` values plus the 3 base tags).
