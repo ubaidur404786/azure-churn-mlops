@@ -253,3 +253,39 @@ Meaning: the API now opens the model trained in Azure ML. The deploy can use the
 Why the commit id as tag: every image in the registry points to exactly one commit, so you always know which code is live, and you can roll back by deploying an older tag.
 
 Note: [infra/main.bicep](../../infra/main.bicep) still has `imageTag = 'v1'`. If Bicep is deployed again, pass the current tag (`--parameters imageTag=<commit id>`), or it puts the old `v1` image back.
+
+### Error: CI #2 failed, so Deploy was skipped
+
+The push of the deploy workflow started CI #2. It failed in "Run the tests" with exit code 3, and Deploy #1 was **skipped**, because it only runs after a green CI. That is the safety rule working.
+
+Read the end of the failed log:
+
+```powershell
+gh run view 38199072950 --log-failed --repo $GH_REPO | Select-String -Pattern "INTERNALERROR" | Select-Object -Last 8
+```
+
+```
+INTERNALERROR>   File ".../scripts/test_live_api.py", line 51, in <module>
+INTERNALERROR>     sys.exit()
+INTERNALERROR> SystemExit
+```
+
+Cause: pytest looks for **every file named `test_*.py`** in the whole project. [scripts/test_live_api.py](../../scripts/test_live_api.py) matches that name, so pytest imported it, and importing a script runs it: it called the live API. On GitHub the API was awake, the first request was fast, the script stopped with `sys.exit()`, and pytest crashed (exit code 3 = internal error). On the laptop the same thing happened silently: every `pytest` run also ran the speed test and overwrote `docs/results/api_speed.md`.
+
+Fix: tell pytest to look only in `tests/` — one line in [pytest.ini](../../pytest.ini):
+
+```
+testpaths = tests
+```
+
+Check:
+
+```powershell
+pytest --collect-only -q
+```
+
+```
+3 tests collected
+```
+
+Also changed: the speed script now **adds one row** per run to [docs/results/api_speed.md](../results/api_speed.md) instead of rewriting the file, so no result is lost again.

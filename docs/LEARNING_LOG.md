@@ -188,3 +188,6 @@ One entry per step: date, what we did, key commands, errors and fixes.
 ### 2026-10-12 — 5.5 Deploy workflow
 - `.github/workflows/deploy.yml`: runs after CI succeeds on main (`workflow_run`) or by hand. OIDC login → download `churn-model:1` → build image tagged with the commit SHA → test `/health` on the runner → push to ACR → `az containerapp update --image` → check live `/health`.
 - Watch out: `infra/main.bicep` has `imageTag = 'v1'`; a Bicep redeploy must pass the current tag.
+- CI #2 (run 38199072950) failed in "Run the tests", exit code 3; Deploy #1 was skipped (only runs after green CI).
+- `gh run view 38199072950 --log-failed ... | Select-String INTERNALERROR` → `scripts/test_live_api.py, line 51, sys.exit(), SystemExit`. Cause: pytest collects every `test_*.py`, so it imported (= ran) the live speed script. Locally this also overwrote `api_speed.md` on every `pytest` run.
+- Fix: `testpaths = tests` in `pytest.ini` (`pytest --collect-only -q` → 3 tests). The speed script now appends one row per run.

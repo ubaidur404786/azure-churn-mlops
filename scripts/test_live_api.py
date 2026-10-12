@@ -63,21 +63,8 @@ fastest = min(times) * 1000
 slowest = max(times) * 1000
 print(f"average: {average:.0f} ms, fastest: {fastest:.0f} ms, slowest: {slowest:.0f} ms")
 
-# Write the results to a Markdown file
-report = f"""# Live API speed
-
-Measured on {date.today()} with `scripts/test_live_api.py`, from a laptop in France to the Container App in francecentral.
-Each request is one `POST /predict` with the test customer (answer: {answer}).
-
-| Measure | Value |
-|---|---|
-| Cold start (first request after the app scaled to 0) | {cold_start:.2f} s |
-| Average of {NUMBER_OF_REQUESTS} warm requests | {average:.0f} ms |
-| Fastest warm request | {fastest:.0f} ms |
-| Slowest warm request | {slowest:.0f} ms |
-
-The app runs with min 0 replicas, so it costs nothing when idle. The price is the cold start: the first request after a few idle minutes waits while Azure starts the container.
-"""
-with open("docs/results/api_speed.md", "w", encoding="utf-8") as file:
-    file.write(report)
-print("saved docs/results/api_speed.md")
+# Add this run as one new row at the end of the results table
+row = f"| {date.today()} | {cold_start:.2f} s | {average:.0f} ms | {fastest:.0f} ms | {slowest:.0f} ms |\n"
+with open("docs/results/api_speed.md", "a", encoding="utf-8") as file:
+    file.write(row)
+print("added one row to docs/results/api_speed.md")
