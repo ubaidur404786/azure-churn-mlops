@@ -17,3 +17,4 @@ One line at the start and end of every phase. Azure cost data arrives 8–48 hou
 | 2026-10-12 | Phase 4 end | €175.99 | €0.00 (cost data 8–48 h late) | ACR Basic expected (~€0.16/day); training job ~€0.01 (3 min on 1 node) |
 | 2026-10-12 | Phase 5 start | €175.99 | €0.00 (cost data 8–48 h late) | ACR Basic expected (~€0.16/day) |
 | 2026-10-12 | Phase 5 end | €175.96 (portal) | about €0.03 | ACR Basic (~€0.16/day); 3 training jobs ~€0.01 each; cost data 8–48 h late |
+| 2026-10-12 | Phase 6 start | €175.96 (portal) | about €0.03 | ACR Basic (~€0.16/day); Application Insights ingestion free up to 5 GB/month |
