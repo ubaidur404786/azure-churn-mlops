@@ -2,8 +2,8 @@
 
 This guide rebuilds the project from an empty Azure account to a monitored, automatically deployed ML API. Each step shows the same action **two ways, side by side**:
 
-- **By code** (left): the command or file used in this project. It is repeatable, reviewable and easy to delete.
-- **By hand** (right): the same action with clicks in the Azure portal, Azure ML studio or GitHub, with a screenshot of the real screen.
+- **By code** (left column): the command or file used in this project. It is repeatable, reviewable and easy to delete.
+- **By hand** (right column): the same action with clicks in the Azure portal, Azure ML studio or GitHub. A screenshot of the real screen follows the table.
 
 Both give the same result. Clicking through once shows where things live; the code is what makes the work repeatable.
 
@@ -59,7 +59,7 @@ Every new PowerShell terminal (code way) starts in the project folder with:
 
 ## Part 0 — Prepare the account and the tools
 
-![Part 0](docs/architecture/arch_00.svg)
+![Part 0 architecture](docs/architecture/arch_00.svg)
 
 **In one sentence:** a budget alert emails before any cost grows, and the command-line tools talk to Azure and GitHub from the laptop.
 
@@ -74,9 +74,13 @@ Every new PowerShell terminal (code way) starts in the project folder with:
 | Add-ons | `az extension add -n ml` · `az extension add -n containerapp` · `az bicep install` | nothing to install |
 | Resource providers | `az provider register -n Microsoft.App` (and 6 more) | Portal → **Subscriptions** → the subscription → **Settings → Resource providers** → select → **Register** |
 
-| The budget (by hand) | Resource providers (by hand) |
-|---|---|
-| <img src="docs/screenshots/00_budget.png" width="460"> | <img src="docs/screenshots/guide/00_resource_providers.png" width="460"> |
+By hand, the budget:
+
+![Budget with email alerts](docs/screenshots/00_budget.png)
+
+By hand, the resource providers (filtered on `Microsoft.App`):
+
+![Resource providers, Microsoft.App registered](docs/screenshots/guide/00_resource_providers.png)
 
 Details and real outputs: [Phase 0](docs/tutorial/phase_00_setup.md).
 
@@ -84,7 +88,7 @@ Details and real outputs: [Phase 0](docs/tutorial/phase_00_setup.md).
 
 ## Part 1 — Model and API on the laptop
 
-![Part 1](docs/architecture/arch_01.svg)
+![Part 1 architecture](docs/architecture/arch_01.svg)
 
 **In one sentence:** the same `train.py` that later runs in Azure is first run locally, and the API and its Docker image are tested before any cloud cost.
 
@@ -100,7 +104,7 @@ Details and real outputs: [Phase 0](docs/tutorial/phase_00_setup.md).
 
 There is no "by hand" way here: this part is code only. The API's own test page:
 
-<img src="docs/screenshots/01_local_docs.png" width="620">
+![The API test page on the laptop](docs/screenshots/01_local_docs.png)
 
 Files: [src/train.py](src/train.py), [src/app.py](src/app.py), [tests/test_app.py](tests/test_app.py), [Dockerfile](Dockerfile). Details: [Phase 1](docs/tutorial/phase_01_laptop.md).
 
@@ -108,7 +112,7 @@ Files: [src/train.py](src/train.py), [src/app.py](src/app.py), [tests/test_app.p
 
 ## Part 2 — All Azure resources from one Bicep file
 
-![Part 2](docs/architecture/arch_02.svg)
+![Part 2 architecture](docs/architecture/arch_02.svg)
 
 **In one sentence:** one Bicep file creates every resource and the 3 role assignments, each tagged by feature, and a free `what-if` shows the changes before anything is created.
 
@@ -118,7 +122,11 @@ Why: one folder for every resource. It is free, and deleting it deletes everythi
 
 | By code | By hand |
 |---|---|
-| `az group create --name $RG --location $LOCATION --tags $TAGS` | Portal → **Resource groups** → **+ Create** → name `rg-churn-mlops`, region **France Central** → **Tags** tab: `project`, `owner`, `env` → **Review + create** <br><br> <img src="docs/screenshots/guide/02_rg_create_form.png" width="460"> |
+| `az group create --name $RG --location $LOCATION --tags $TAGS` | Portal → **Resource groups** → **+ Create** → name `rg-churn-mlops`, region **France Central** → **Tags** tab: `project`, `owner`, `env` → **Review + create** |
+
+By hand, the form:
+
+![Create a resource group form](docs/screenshots/guide/02_rg_create_form.png)
 
 ### Step 3. All the base resources
 
@@ -157,9 +165,13 @@ Roles (by hand: the resource → **Access control (IAM)** → **+ Add → Add ro
 | `id-churn-api` | Key Vault Secrets User | the key vault |
 | the signed-in user | Key Vault Secrets Officer | the key vault (even the subscription owner cannot write secrets without it) |
 
-| Result: the resource group | Result: the Key Vault roles (IAM → Role assignments, ids hidden) |
-|---|---|
-| <img src="docs/screenshots/02_resource_group.png" width="460"> | <img src="docs/screenshots/guide/03_kv_roles.png" width="460"> |
+Result, the resource group with every resource:
+
+![The resource group with every resource](docs/screenshots/02_resource_group.png)
+
+Result, the Key Vault roles (Key Vault → **Access control (IAM)** → **Role assignments**; ids hidden):
+
+![Key Vault role assignments](docs/screenshots/guide/03_kv_roles.png)
 
 Details: [Phase 2](docs/tutorial/phase_02_bicep.md).
 
@@ -167,7 +179,7 @@ Details: [Phase 2](docs/tutorial/phase_02_bicep.md).
 
 ## Part 3 — Serve the API on Container Apps
 
-![Part 3](docs/architecture/arch_03.svg)
+![Part 3 architecture](docs/architecture/arch_03.svg)
 
 **In one sentence:** the image goes to a private registry, and the Container App pulls it with its managed identity, serves HTTPS and scales to zero when idle.
 
@@ -175,9 +187,16 @@ Details: [Phase 2](docs/tutorial/phase_02_bicep.md).
 
 If the image is **public on Docker Hub**, a Container App can pull it directly (image source "Docker Hub or other registries") and this step can be skipped. For a private image, `az acr import --name $ACR --source docker.io/<user>/<image>:<tag> --image churn-api:v1` copies it into the registry without going through the laptop.
 
-| By code | By hand |
-|---|---|
-| `az acr login --name $ACR` <br> `docker build -t "${IMAGE}:v1" .` <br> `docker push "${IMAGE}:v1"` <br><br> Check: `az acr repository show-tags --name $ACR --repository churn-api -o table` | The portal has **no upload button** for images: use the code way or `az acr import`. <br> Check: registry → **Services → Repositories** → `churn-api` → its tags (`v1`, then one tag per commit from Part 5) <br><br> <img src="docs/screenshots/guide/04_acr_tags.png" width="460"> |
+| | By code | By hand |
+|---|---|---|
+| Log in to the registry | `az acr login --name $ACR` | — |
+| Build | `docker build -t "${IMAGE}:v1" .` | — |
+| Upload | `docker push "${IMAGE}:v1"` | the portal has **no upload button** for images: use the code way or `az acr import` |
+| Check | `az acr repository show-tags --name $ACR --repository churn-api -o table` | registry → **Services → Repositories** → `churn-api` → its tags |
+
+By hand, the tags: `v1` from this step, then one tag per commit from Part 5:
+
+![Registry repository churn-api and its tags](docs/screenshots/guide/04_acr_tags.png)
 
 ### Step 5. Create the Container App
 
@@ -193,25 +212,35 @@ Why: runs the image with a public HTTPS address, pulls it with the identity (no 
 | Scale to zero | `scale: { minReplicas: 0, maxReplicas: 1 }` | after creation: **Application → Scale** → min 0, max 1 → **Save** |
 | Address | output `apiUrl` | **Overview → Application Url** |
 
-By code, the same `az deployment group create` as step 3 then creates or updates the app.
+By code, the same `az deployment group create` as step 3 then creates or updates the app. By hand, the same settings on the live app:
 
-The same settings in the portal, on the live app:
+Container: the image comes from the registry and is pulled with a managed identity. (On an existing app the portal shows the **Identity** box empty in this view; the app still uses `id-churn-api`, listed under **Security → Identity**.)
 
-| Container: image from the registry, pulled with the managed identity | Ingress: public HTTPS on port 8000 |
-|---|---|
-| <img src="docs/screenshots/guide/05_ca_container_image.png" width="460"> | <img src="docs/screenshots/guide/05_ca_ingress.png" width="460"> |
-| **Scale: min 0, max 1 replica** | **Test: `POST /predict` on the live URL** |
-| <img src="docs/screenshots/guide/05_ca_scale.png" width="460"> | <img src="docs/screenshots/03_predict_response.png" width="460"> |
+![Container settings](docs/screenshots/guide/05_ca_container_image.png)
 
-(On an existing app the portal shows the **Identity** box empty in this view; the app still pulls with `id-churn-api`, listed under **Security → Identity**.)
+Ingress: public HTTPS on port 8000:
 
-Test: open `<Application Url>/docs` → `POST /predict` → **0.728**, churn true. Speed: `python scripts/test_live_api.py` (cold start ~25 s, warm ~0.2 s). Details: [Phase 3](docs/tutorial/phase_03_container_apps.md).
+![Ingress settings](docs/screenshots/guide/05_ca_ingress.png)
+
+Scale: min 0, max 1 replica:
+
+![Scale settings](docs/screenshots/guide/05_ca_scale.png)
+
+Test: open `<Application Url>/docs` → `POST /predict` → **0.728**, churn true:
+
+![POST /predict on the live URL](docs/screenshots/03_predict_response.png)
+
+Speed: `python scripts/test_live_api.py` (cold start ~25 s, warm ~0.2 s). Details: [Phase 3](docs/tutorial/phase_03_container_apps.md).
 
 ### Step 6. Deploy a new image version
 
 | By code | By hand |
 |---|---|
-| `az containerapp update --name $CA --resource-group $RG --image "${IMAGE}:<tag>"` <br><br> The [deploy workflow](.github/workflows/deploy.yml) runs this on every green push (Part 5). | Container App → **Application → Containers** → **Edit and deploy** → change the tag → **Create**. A new **revision** gets the traffic. <br> Check: **Application → Revisions and replicas** (here "Scaled to 0" because nobody is calling it) <br><br> <img src="docs/screenshots/guide/06_ca_revisions.png" width="460"> |
+| `az containerapp update --name $CA --resource-group $RG --image "${IMAGE}:<tag>"` (the [deploy workflow](.github/workflows/deploy.yml) runs this on every green push, Part 5) | Container App → **Application → Containers** → **Edit and deploy** → change the tag → **Create**. A new **revision** gets the traffic |
+
+By hand, the check: **Application → Revisions and replicas** ("Scaled to 0" because nobody is calling it):
+
+![Revisions and replicas](docs/screenshots/guide/06_ca_revisions.png)
 
 ### Step 7. A secret from Key Vault (no secret in code)
 
@@ -221,19 +250,23 @@ Test: open `<Application Url>/docs` → `POST /predict` → **0.728**, churn tru
 | Link it to the app | `secrets: [{ name, keyVaultUrl, identity }]` in Bicep | Container App → **Security → Secrets** → **+ Add** → **Key Vault reference** → secret URL + identity |
 | Give it to the code | `env: [{ name: 'APPLICATIONINSIGHTS_CONNECTION_STRING', secretRef }]` | **Containers → Environment variables** → source **Reference a secret** |
 
-| 1. The secret in Key Vault (value never shown) |
-|---|
-| <img src="docs/screenshots/guide/07_kv_secret.png" width="700"> |
-| **2. The app's Key Vault reference** |
-| <img src="docs/screenshots/guide/07_ca_secret_ref.png" width="700"> |
-| **3. The environment variable that reads it** |
-| <img src="docs/screenshots/guide/07_ca_env_from_secret.png" width="460"> |
+By hand, 1. the secret in Key Vault (its value is never shown):
+
+![The secret in Key Vault](docs/screenshots/guide/07_kv_secret.png)
+
+2. The app's Key Vault reference:
+
+![The app's Key Vault reference](docs/screenshots/guide/07_ca_secret_ref.png)
+
+3. The environment variable that reads it:
+
+![The environment variable that reads the secret](docs/screenshots/guide/07_ca_env_from_secret.png)
 
 ---
 
 ## Part 4 — Train in Azure Machine Learning
 
-![Part 4](docs/architecture/arch_04.svg)
+![Part 4 architecture](docs/architecture/arch_04.svg)
 
 **In one sentence:** the same `train.py` runs as an Azure ML job on a cluster that exists only while it works, logs metrics with MLflow and registers the model.
 
@@ -243,13 +276,21 @@ Open the studio by hand: workspace → **Overview** → **Launch studio** (or ht
 
 | By code | By hand |
 |---|---|
-| `az ml data create --name churn-data --version 1 --type uri_file --path data/churn.csv --resource-group $RG --workspace-name $AML_WORKSPACE` | Studio → **Assets → Data** → **+ Create** → name `churn-data`, type **File (uri_file)** → **From local files** → `churn.csv` → **Create** <br><br> <img src="docs/screenshots/guide/08_aml_data.png" width="460"> |
+| `az ml data create --name churn-data --version 1 --type uri_file --path data/churn.csv --resource-group $RG --workspace-name $AML_WORKSPACE` | Studio → **Assets → Data** → **+ Create** → name `churn-data`, type **File (uri_file)** → **From local files** → `churn.csv` → **Create** |
+
+By hand, the result:
+
+![Data asset churn-data in the studio](docs/screenshots/guide/08_aml_data.png)
 
 ### Step 9. A compute cluster that costs €0 when idle
 
 | By code | By hand |
 |---|---|
-| [aml/cluster.yml](aml/cluster.yml) + `az ml compute create --file aml/cluster.yml --resource-group $RG --workspace-name $AML_WORKSPACE` | Studio → **Manage → Compute → Compute clusters** → **+ New** → Dedicated, CPU, `Standard_DS11_v2` → name `cpu-cluster`, **min nodes 0**, max 1, idle seconds 120 → **Create** <br><br> <img src="docs/screenshots/04_cluster_zero_nodes.png" width="460"> |
+| [aml/cluster.yml](aml/cluster.yml) + `az ml compute create --file aml/cluster.yml --resource-group $RG --workspace-name $AML_WORKSPACE` | Studio → **Manage → Compute → Compute clusters** → **+ New** → Dedicated, CPU, `Standard_DS11_v2` → name `cpu-cluster`, **min nodes 0**, max 1, idle seconds 120 → **Create** |
+
+By hand, the result:
+
+![cpu-cluster with 0 nodes](docs/screenshots/04_cluster_zero_nodes.png)
 
 ### Step 10. Run the training script as a job
 
@@ -263,9 +304,13 @@ Open the studio by hand: workspace → **Overview** → **Launch studio** (or ht
 | Compute | `azureml:cpu-cluster` | `cpu-cluster` |
 | Watch | `az ml job stream --name $JOB …` | the job page: status, **Metrics**, **Outputs + logs** |
 
-| The finished job | Its MLflow metrics |
-|---|---|
-| <img src="docs/screenshots/04_aml_job.png" width="460"> | <img src="docs/screenshots/04_aml_metrics.png" width="460"> |
+By hand, the finished job:
+
+![The finished training job](docs/screenshots/04_aml_job.png)
+
+Its MLflow metrics:
+
+![The job's MLflow metrics](docs/screenshots/04_aml_metrics.png)
 
 Result: accuracy 0.796, F1 0.584, ROC-AUC 0.838, the same as on the laptop. Note: the model is saved with scikit-learn **1.5.2** (the version in `sklearn-1.5`), so the API pins the same version in [requirements-api.txt](requirements-api.txt). Otherwise it cannot open the model.
 
@@ -273,7 +318,11 @@ Result: accuracy 0.796, F1 0.584, ROC-AUC 0.838, the same as on the laptop. Note
 
 | By code | By hand |
 |---|---|
-| `az ml model create --name churn-model --version 1 --type custom_model --path "azureml://jobs/$JOB/outputs/model" --resource-group $RG --workspace-name $AML_WORKSPACE` | The finished job page → **Register model** → Custom, output `model` → name `churn-model` → **Register** <br><br> <img src="docs/screenshots/04_model_registry.png" width="460"> |
+| `az ml model create --name churn-model --version 1 --type custom_model --path "azureml://jobs/$JOB/outputs/model" --resource-group $RG --workspace-name $AML_WORKSPACE` | the finished job page → **Register model** → Custom, output `model` → name `churn-model` → **Register** |
+
+By hand, the result:
+
+![churn-model in the model registry](docs/screenshots/04_model_registry.png)
 
 ### Step 12. Check the cluster is back to 0 nodes
 
@@ -287,7 +336,7 @@ Details: [Phase 4](docs/tutorial/phase_04_azure_ml.md).
 
 ## Part 5 — Automate with GitHub Actions and OIDC
 
-![Part 5](docs/architecture/arch_05.svg)
+![Part 5 architecture](docs/architecture/arch_05.svg)
 
 **In one sentence:** every push trains and tests the code; a green run builds an image with the registered model and deploys it, and GitHub logs in to Azure with a short-lived OIDC token instead of a stored secret.
 
@@ -301,7 +350,9 @@ Why: GitHub gets a short-lived token per run; Azure trusts only this repo's `mai
 | Service principal | `az ad sp create --id $APP_ID` | created automatically by the portal |
 | Trust rule | `az ad app federated-credential create --id $APP_ID --parameters infra/github-federated-credential.json` | the app → **Certificates & secrets → Federated credentials** → **+ Add credential** → **GitHub Actions deploying Azure resources** → org, repo, entity **Branch**, `main` |
 
-<img src="docs/screenshots/05_federated_credential.png" width="620">
+By hand, the result:
+
+![Federated credential for the main branch](docs/screenshots/05_federated_credential.png)
 
 If a workflow fails with `AADSTS700213 ... subject 'repo:owner@id/repo@id:ref:refs/heads/main'`, copy that exact subject into the trust rule ([infra/github-federated-credential.json](infra/github-federated-credential.json)). GitHub now sends ids in the subject.
 
@@ -309,19 +360,29 @@ If a workflow fails with `AADSTS700213 ... subject 'repo:owner@id/repo@id:ref:re
 
 | By code | By hand |
 |---|---|
-| `az role assignment create --assignee-object-id $SP_ID --assignee-principal-type ServicePrincipal --role Contributor --scope $RG_ID` | Resource group → **Access control (IAM)** → **+ Add → Add role assignment** → **Contributor** → members: `gh-churn-mlops` → **Review + assign**. It then shows on every resource in the group as "Resource group (Inherited)", as in the Key Vault roles of step 3 |
+| `az role assignment create --assignee-object-id $SP_ID --assignee-principal-type ServicePrincipal --role Contributor --scope $RG_ID` | Resource group → **Access control (IAM)** → **+ Add → Add role assignment** → **Contributor** → members: `gh-churn-mlops` → **Review + assign** |
+
+The role then shows on every resource in the group as "Resource group (Inherited)": see `gh-churn-mlops` in the Key Vault roles screenshot of step 3.
 
 ### Step 15. Tell GitHub the ids (not secrets)
 
 | By code | By hand |
 |---|---|
-| `gh variable set AZURE_CLIENT_ID --body $APP_ID --repo $GH_REPO` (same for `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`) | GitHub repo → **Settings → Secrets and variables → Actions → Variables** → **New repository variable** × 3 (values hidden in the screenshot) <br><br> <img src="docs/screenshots/guide/15_gh_variables.png" width="460"> |
+| `gh variable set AZURE_CLIENT_ID --body $APP_ID --repo $GH_REPO` (same for `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`) | GitHub repo → **Settings → Secrets and variables → Actions → Variables** → **New repository variable** × 3 |
+
+By hand, the result (values hidden):
+
+![GitHub repository variables](docs/screenshots/guide/15_gh_variables.png)
 
 ### Step 16. CI: train and test on every push
 
 | By code | By hand |
 |---|---|
-| [.github/workflows/ci.yml](.github/workflows/ci.yml): checkout → Python 3.12 → `pip install` → `python src/train.py` → `pytest`. Starts on every `git push`. | GitHub repo → **Actions** → every run with its status; **Re-run jobs** runs one again <br><br> <img src="docs/screenshots/guide/16_gh_actions.png" width="460"> |
+| [.github/workflows/ci.yml](.github/workflows/ci.yml): checkout → Python 3.12 → `pip install` → `python src/train.py` → `pytest`. Starts on every `git push` | GitHub repo → **Actions** → every run with its status; **Re-run jobs** runs one again |
+
+By hand, the runs:
+
+![GitHub Actions runs](docs/screenshots/guide/16_gh_actions.png)
 
 ### Step 17. CD: build and deploy after a green CI
 
@@ -329,13 +390,19 @@ If a workflow fails with `AADSTS700213 ... subject 'repo:owner@id/repo@id:ref:re
 |---|---|
 | [.github/workflows/deploy.yml](.github/workflows/deploy.yml): OIDC login → download `churn-model:1` → `docker build` → test `/health` → `docker push` (tag = commit id) → `az containerapp update` → check the live `/health` | Container App → **Settings → Deployment** (or **Continuous deployment**) → sign in to GitHub → repo + branch `main` → registry `acrchurnub4786`, Dockerfile `./Dockerfile` → identity / OIDC → **Start**. The portal writes a simpler workflow into the repo (without our extra steps: wait for CI, add the registered model, test before push) |
 
-<img src="docs/screenshots/05_deploy_log.png" width="620">
+The deploy run, step by step:
+
+![Deploy workflow log](docs/screenshots/05_deploy_log.png)
 
 ### Step 18. A "Train in Azure ML" button
 
 | By code | By hand |
 |---|---|
-| [.github/workflows/train.yml](.github/workflows/train.yml), started with `gh workflow run train.yml --repo $GH_REPO`; it submits [aml/train-job.yml](aml/train-job.yml) and checks the status every 30 s | GitHub → **Actions → Train in Azure ML → Run workflow** → branch `main` → **Run workflow** (or submit the job in the studio, step 10) <br><br> <img src="docs/screenshots/guide/18_gh_run_workflow.png" width="460"> |
+| [.github/workflows/train.yml](.github/workflows/train.yml), started with `gh workflow run train.yml --repo $GH_REPO`; it submits [aml/train-job.yml](aml/train-job.yml) and checks the status every 30 s | GitHub → **Actions → Train in Azure ML → Run workflow** → branch `main` → **Run workflow** (or submit the job in the studio, step 10) |
+
+By hand, the button:
+
+![Run workflow button of Train in Azure ML](docs/screenshots/guide/18_gh_run_workflow.png)
 
 Details: [Phase 5](docs/tutorial/phase_05_cicd.md).
 
@@ -343,7 +410,7 @@ Details: [Phase 5](docs/tutorial/phase_05_cicd.md).
 
 ## Part 6 — Monitor the live API
 
-![Part 6](docs/architecture/arch_06.svg)
+![Part 6 architecture](docs/architecture/arch_06.svg)
 
 **In one sentence:** the API sends every request and a log line per prediction to Application Insights, KQL queries turn them into traffic, failure and speed tables, and an alert emails when the server fails.
 
@@ -353,19 +420,31 @@ Application Insights and its Log Analytics workspace already exist (step 3), and
 
 | By code | By hand |
 |---|---|
-| In [src/app.py](src/app.py), call `configure_azure_monitor()` **before** `from fastapi import FastAPI`, only when `APPLICATIONINSIGHTS_CONNECTION_STRING` is set. Add `azure-monitor-opentelemetry` to [requirements-api.txt](requirements-api.txt). A push and the deploy workflow ships it. | The code part has no portal button. The setting is visible in Container App → **Containers → Environment variables** (step 7). Then Application Insights → **Overview** shows requests, failures and response time a few minutes after the first calls <br><br> <img src="docs/screenshots/06_app_insights.png" width="460"> |
+| In [src/app.py](src/app.py), call `configure_azure_monitor()` **before** `from fastapi import FastAPI`, only when `APPLICATIONINSIGHTS_CONNECTION_STRING` is set. Add `azure-monitor-opentelemetry` to [requirements-api.txt](requirements-api.txt). A push and the deploy workflow ship it | the code part has no portal button. The setting is visible in Container App → **Containers → Environment variables** (step 7). Then Application Insights → **Overview** shows requests, failures and response time a few minutes after the first calls |
+
+By hand, the result:
+
+![Application Insights overview](docs/screenshots/06_app_insights.png)
 
 ### Step 20. Ask questions with KQL
 
 | By code | By hand |
 |---|---|
-| The queries in [docs/kql/](docs/kql/requests_per_hour.kql): requests per hour, failed requests, average response time. They count with `sum(itemCount)`, because the app keeps only a sample of the requests. | Application Insights → **Monitoring → Logs** → close the welcome windows → switch **Agent** off → **KQL mode** → paste a query → **Run** <br><br> <img src="docs/screenshots/06_kql.png" width="460"> |
+| The queries in [docs/kql/](docs/kql/requests_per_hour.kql): requests per hour, failed requests, average response time. They count with `sum(itemCount)`, because the app keeps only a sample of the requests | Application Insights → **Monitoring → Logs** → close the welcome windows → switch **Agent** off → **KQL mode** → paste a query → **Run** |
+
+By hand, a query and its result:
+
+![A KQL query in Logs](docs/screenshots/06_kql.png)
 
 ### Step 21. Email when the server fails
 
 | By code | By hand |
 |---|---|
-| `az monitor action-group create --resource-group $RG --name $ACTION_GROUP --short-name churnmail --action email me $EMAIL …` <br> then `az monitor metrics alert create --resource-group $RG --name $ALERT --scopes $APPI_ID --condition "count requests/failed > 5 where request/resultCode includes 500" --window-size 5m --evaluation-frequency 1m --severity 2 --action $ACTION_GROUP …` | Application Insights → **Monitoring → Alerts → + Create → Alert rule** → signal **Failed requests** → filter **Result code = 500** → Greater than 5, Count, every 1 min, lookback 5 min → **+ Create action group** → Email → the address → severity 2 → name → **Review + create** <br><br> <img src="docs/screenshots/06_alert_rule.png" width="460"> |
+| `az monitor action-group create --resource-group $RG --name $ACTION_GROUP --short-name churnmail --action email me $EMAIL …`, then `az monitor metrics alert create --resource-group $RG --name $ALERT --scopes $APPI_ID --condition "count requests/failed > 5 where request/resultCode includes 500" --window-size 5m --evaluation-frequency 1m --severity 2 --action $ACTION_GROUP …` | Application Insights → **Monitoring → Alerts → + Create → Alert rule** → signal **Failed requests** → filter **Result code = 500** → Greater than 5, Count, every 1 min, lookback 5 min → **+ Create action group** → Email → the address → severity 2 → name → **Review + create** |
+
+By hand, the result:
+
+![The alert rule](docs/screenshots/06_alert_rule.png)
 
 Details: [Phase 6](docs/tutorial/phase_06_monitoring.md).
 
@@ -385,4 +464,4 @@ Details: [Phase 6](docs/tutorial/phase_06_monitoring.md).
 
 Cost analysis of the resource group after Parts 0–6 (about €0.04 in total; the `feature` tag grouping appears once the tags reach the cost data):
 
-<img src="docs/screenshots/guide/22_cost_analysis.png" width="700">
+![Cost analysis of the resource group](docs/screenshots/guide/22_cost_analysis.png)
