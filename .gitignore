@@ -12,6 +12,7 @@ __pycache__/
 # Local MLflow runs
 mlruns/
 mlartifacts/
+mlflow.db
 
 # Private planning and assistant files (not part of the public project)
 PLAN.md

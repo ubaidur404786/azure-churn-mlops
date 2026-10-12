@@ -8,3 +8,4 @@ One line at the start and end of every phase. Azure cost data arrives 8–48 hou
 |---|---|---|---|---|
 | 2026-10-11 | Phase 0 start | €175.99 | €0.00 | none (no resources) |
 | 2026-10-12 | Phase 0 end | €175.99 | €0.00 | none (no resources yet) |
+| 2026-10-12 | Phase 1 end | €175.99 | €0.00 | none (laptop only, no Azure resources) |

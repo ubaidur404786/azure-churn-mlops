@@ -1,0 +1,16 @@
+# Keep the image small: only src/, model/ and requirements-api.txt are needed
+.git
+.venv
+.pytest_cache
+__pycache__
+data
+docs
+tests
+scripts
+mlruns
+mlartifacts
+mlflow.db
+.env
+PLAN.md
+CLAUDE.md
+.claude

@@ -1,0 +1,8 @@
+# Only what the API needs inside the Docker image (no MLflow, no tests)
+# Versions match the laptop, so the saved model loads the same way
+pandas==3.0.6
+numpy==2.5.4
+scikit-learn==1.9.1
+joblib==1.6.0
+fastapi==0.143.0
+uvicorn==0.54.0
