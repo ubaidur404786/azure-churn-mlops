@@ -114,4 +114,4 @@ uvicorn src.app:app --reload
 
 Then open http://localhost:8000/docs.
 
-> Status: the project ran live on Azure in October 2026. All the proof (screenshots, metrics, runs, cost) was captured while it was live. Shutdown is next: all Azure resources are deleted at the end of the project.
+> Status: the project ran live on Azure in October 2026, then every Azure resource was deleted ([screenshot](docs/screenshots/08_all_deleted.png)). All the proof (screenshots, metrics, runs, cost) was captured while it was live. The whole setup can be recreated with the 4 commands above.

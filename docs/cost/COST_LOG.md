@@ -21,3 +21,4 @@ One line at the start and end of every phase. Azure cost data arrives 8–48 hou
 | 2026-10-12 | Phase 6 end | €175.96 (portal) | about €0.03 | ACR Basic (~€0.16/day); alert rule ~$0.10/month; App Insights within the free 5 GB; cost data 8–48 h late |
 | 2026-10-12 | Phase 7 start | $199.86 of $200 (portal) | €0.12 (cost analysis) | Azure ML workspace €0.06, Container Registry €0.06 |
 | 2026-10-12 | Phase 7 end | $199.86 of $200 (portal) | €0.12 (cost analysis, data 8–48 h late) | Azure ML workspace €0.06, Container Registry €0.06; Key Vault and Storage under €0.01 each |
+| 2026-10-12 | Phase 8 end (all deleted) | $199.86 of $200 (last portal reading) | €0.12 (cost analysis, data 8–48 h late) | Azure ML workspace €0.06, Container Registry €0.06; nothing left running |
