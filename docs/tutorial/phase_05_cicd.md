@@ -377,3 +377,54 @@ Screenshots:
 Entra ID → App registrations → gh-churn-mlops → Certificates & secrets: **Client secrets (0)**, **Federated credentials (1)** — the app has no password at all, only the trust rule for GitHub:
 
 ![Federated credential](../screenshots/05_federated_credential.png)
+
+---
+
+## 5.6 (optional) "Train in Azure ML" button
+
+[.github/workflows/train.yml](../../.github/workflows/train.yml) runs only by hand (`workflow_dispatch`). It logs in with the same OIDC identity and submits [aml/train-job.yml](../../aml/train-job.yml) — the same job as Phase 4.
+
+```powershell
+git add .
+```
+
+```powershell
+git commit -m "Add manual Azure ML training workflow and use azure/login v3"
+```
+
+```powershell
+git push
+```
+
+The push also ran CI #4 and Deploy #3: both green, and Deploy #3 had no Node.js 20 warning with `azure/login@v3`.
+
+Start the training workflow by hand:
+
+```powershell
+gh workflow run train.yml --repo $GH_REPO
+```
+
+```
+✓ Created workflow_dispatch event for train.yml at main
+https://github.com/ubaidur404786/azure-churn-mlops/actions/runs/38230213843
+```
+
+### Error: the workflow is red, but the job worked
+
+```
+X train in 6m26s
+  ✓ Run azure/login@v3
+  ✓ Submit the training job
+  X Follow the job
+
+RunId: bubbly_camera_5dd7jr740n
+ERROR: Met error <class 'binascii.Error'>:Incorrect padding
+```
+
+Azure ML studio showed the job `bubbly_camera_5dd7jr740n` as **Completed** (2 min 54 s), created by **Service Principal** (the GitHub identity), with accuracy 0.7956 / f1 0.5838 / roc_auc 0.8375 — the same as before.
+
+Cause: only the `az ml job stream` command failed. It tries to read the login token in a way that breaks with the short-lived OIDC token GitHub uses (`Incorrect padding` = it could not decode the token). On the laptop, with a normal `az login`, the same command works.
+
+Lesson: when a pipeline step fails, check whether the real work failed or only the step that watches it.
+
+Fix: instead of streaming the log, the workflow asks for the job status every 30 seconds (`az ml job show --query status`) and stops on `Completed` (success) or `Failed` / `Canceled` (red).

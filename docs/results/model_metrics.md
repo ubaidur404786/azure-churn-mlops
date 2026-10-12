@@ -26,6 +26,7 @@ Baseline: always predicting "no churn" gives an accuracy of 0.735, so the model'
 |---|---|---|---|---|
 | 2026-10-12 | Laptop (Phase 1) | 0.796 | 0.584 | 0.838 |
 | 2026-10-12 | Azure ML job `joyful_grass_9w8dwr40k9` on cpu-cluster (Phase 4) | 0.796 | 0.584 | 0.838 |
+| 2026-10-12 | Azure ML job `bubbly_camera_5dd7jr740n`, started from GitHub Actions (Phase 5) | 0.796 | 0.584 | 0.838 |
 
 ## Example prediction
 

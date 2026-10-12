@@ -40,6 +40,14 @@ jobs:
           echo "JOB=$JOB" >> "$GITHUB_ENV"
           echo "Submitted job $JOB"
 
-      # Follow the job log until it finishes (the metrics are printed at the end)
-      - name: Follow the job
-        run: az ml job stream --name "$JOB" --resource-group "$RG" --workspace-name "$AML_WORKSPACE"
+      # Check the job status every 30 seconds until it finishes
+      # (az ml job stream fails with "Incorrect padding" when logged in with OIDC)
+      - name: Wait for the job
+        run: |
+          while true; do
+            STATUS=$(az ml job show --name "$JOB" --resource-group "$RG" --workspace-name "$AML_WORKSPACE" --query status -o tsv)
+            echo "Job $JOB: $STATUS"
+            if [ "$STATUS" = "Completed" ]; then exit 0; fi
+            if [ "$STATUS" = "Failed" ] || [ "$STATUS" = "Canceled" ]; then exit 1; fi
+            sleep 30
+          done
